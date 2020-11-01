@@ -15,6 +15,7 @@
 #include "mouvement.h"
 #include "SD_macro.h"
 
+
 //#include "simd1D.h"
 //#include "simd2D.h"
 
@@ -76,11 +77,14 @@ int main(int argc, char *argv[])
   save_all_image(SigmaDelta_step4,h,l,n,"./car3_out_step_4/","car_3_out");
 
 
+
+
   free_SD(SigmaDelta_step0,h,l,n);
   free_SD(SigmaDelta_step1,h,l,n);
   free_SD(SigmaDelta_step2,h,l,n);
   free_SD(SigmaDelta_step3,h,l,n);
   free_SD(SigmaDelta_step4,h,l,n);
+
 
     return 0;
 }

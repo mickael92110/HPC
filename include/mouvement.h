@@ -1,10 +1,10 @@
 /* ---------------- */
-/* ----- sd.h ----- */
+/* -- mouvement.h-- */
 /* ---------------- */
 
 
-#ifndef __SD_H__
-#define __SD_H__
+#ifndef __MOUVEMENT_H__
+#define __MOUVEMENT_H__
 
 
 
@@ -17,4 +17,4 @@ void SD_step_2(uint8*** SigmaDelta_step0, uint8*** SigmaDelta_step1, uint8*** Si
 void SD_step_3(uint8*** SigmaDelta_step2, uint8*** SigmaDelta_step3, int h, int l, int n, uint8 vmin, uint8 vmax, int N);
 void SD_step_4(uint8*** SigmaDelta_step2, uint8*** SigmaDelta_step3,uint8*** SigmaDelta_step4, int h, int l, int n);
 
-#endif // __SD_H__
+#endif // __MOUVEMENT_H__
