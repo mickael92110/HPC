@@ -13,8 +13,7 @@
 
 #include "mutil.h"
 
-//#include "simd1D.h"
-//#include "simd2D.h"
+
 
 #ifndef max
 #define max(a,b) (((a) > (b)) ? (a) : (b))
