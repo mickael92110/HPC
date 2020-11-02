@@ -20,9 +20,15 @@ uint8*** init_tab(int h, int l, int n){
 
   m = (uint8 ***) malloc((size_t)(n*sizeof(uint8 **)));
 
-  for(int i = 0; i<n ; ++i){
-    m[i] = ui8matrix(0, h, 0, l);
-  }
+  for(int k = 0; k<n ; ++k){
+    m[k] = ui8matrix(0, h, 0, l);
+      for(int i = 0; i<h ; ++i){
+        for(int j = 0; j<l; ++j){
+          m[k][i][j] = 0;
+        }
+      }
+    }
+
   return m;
 }
 
@@ -80,7 +86,7 @@ void SD_step_1(uint8*** SigmaDelta_step0, uint8*** SigmaDelta_step1, int h, int 
         if(SigmaDelta_step1[k-1][i][j] < SigmaDelta_step0[k][i][j]){
           SigmaDelta_step1[k][i][j] = SigmaDelta_step1[k-1][i][j]+1;
         }
-        if(SigmaDelta_step1[k-1][i][j] > SigmaDelta_step0[k][i][j]){
+        else if(SigmaDelta_step1[k-1][i][j] > SigmaDelta_step0[k][i][j]){
           SigmaDelta_step1[k][i][j] = SigmaDelta_step1[k-1][i][j]-1;
         }
         else{
@@ -114,7 +120,7 @@ void SD_step_3(uint8*** SigmaDelta_step2, uint8*** SigmaDelta_step3, int h, int 
         if(SigmaDelta_step3[k-1][i][j] < N * SigmaDelta_step2[k][i][j]){
           SigmaDelta_step3[k][i][j] = SigmaDelta_step3[k-1][i][j]+1;
         }
-        if(SigmaDelta_step3[k-1][i][j] > N * SigmaDelta_step2[k][i][j]){
+        else if(SigmaDelta_step3[k-1][i][j] > N * SigmaDelta_step2[k][i][j]){
           SigmaDelta_step3[k][i][j] = SigmaDelta_step3[k-1][i][j]-1;
         }
         else{
@@ -132,10 +138,10 @@ void SD_step_4(uint8*** SigmaDelta_step2, uint8*** SigmaDelta_step3,uint8*** Sig
     for(int i = 0; i<h ; ++i){
       for(int j = 0; j<l; ++j){
         if(SigmaDelta_step2[k][i][j] < SigmaDelta_step3[k][i][j]){
-          SigmaDelta_step4[k][i][j] = 0;
+          SigmaDelta_step4[k][i][j] = 255;
         }
         else{
-          SigmaDelta_step4[k][i][j] = 255;
+          SigmaDelta_step4[k][i][j] = 0;
         }
         }
       }
