@@ -12,6 +12,9 @@ uint8 min_3(uint8 *** SigmaDelta_step, int i, int j, int n, int h, int l);
 
 void dilatation_3(uint8 *** SigmaDelta_step, uint8 *** Matrice_dilatation, int h, int l, int n);
 void erosion_3(uint8 *** SigmaDelta_step, uint8 *** Matrice_dilatation, int h, int l, int n);
+void ouverture(uint8 *** SigmaDelta_step, uint8 *** Matrice_erosion, uint8 *** Matrice_dilatation, int h, int l, int n);
+void fermeture(uint8 *** SigmaDelta_step, uint8 *** Matrice_erosion, uint8 *** Matrice_dilatation, int h, int l, int n);
+
 
 
 

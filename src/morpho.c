@@ -83,8 +83,6 @@ uint8 max_3(uint8 *** SigmaDelta_step, int i, int j, int n, int h, int l) {
   return max;
 }
 
-
-
 uint8 min_3(uint8 *** SigmaDelta_step, int i, int j, int n, int h, int l) {
   uint8 min = SigmaDelta_step[n][i][j];
   if((i == 0) & (j == 0)) {
@@ -176,6 +174,16 @@ void erosion_3(uint8 *** SigmaDelta_step, uint8 *** Matrice_erosion3, int h, int
       }
     }
   }
+}
+
+void ouverture(uint8 *** SigmaDelta_step, uint8 *** Matrice_erosion, uint8 *** Matrice_dilatation, int h, int l, int n) {
+  erosion_3(SigmaDelta_step, Matrice_erosion,h,l,n);
+  dilatation_3(Matrice_erosion,Matrice_dilatation,h,l,n);
+}
+
+void fermeture(uint8 *** SigmaDelta_step, uint8 *** Matrice_erosion, uint8 *** Matrice_dilatation, int h, int l, int n) {
+  dilatation_3(SigmaDelta_step,Matrice_dilatation,h,l,n);
+  erosion_3(Matrice_dilatation, Matrice_erosion,h,l,n);
 }
 /*
 void dilatation_5(uint8 *** SigmaDelta_step, uint8 *** Matrice_dilatation, int h, int l, int n) {

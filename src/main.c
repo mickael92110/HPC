@@ -70,24 +70,22 @@ int main(int argc, char *argv[])
   //display_ui8matrix (SigmaDelta_step3[1], nrl, nrh, ncl,  nch, "%2.0u", "voiture");
   save_all_image(SigmaDelta_step3,h,l,n,"./car3_out_step_3/","car_3_out");
 
-
-
   // ####  STEP 4  ####
   uint8 ***SigmaDelta_step4 = init_tab(h, l, n);
   SD_step_4(SigmaDelta_step2,SigmaDelta_step3,SigmaDelta_step4, h,l,n);
   save_all_image(SigmaDelta_step4,h,l,n,"./car3_out_step_4/","car_3_out");
+  //display_ui8matrix(SigmaDelta_step4[1],nrl,nrh,ncl,nch,format, "step4");
 
   // ### DILATATION 3 ###
-
   uint8 ***Matrice_dilatation3 = init_tab(h, l, n);
-  dilatation_3(SigmaDelta_step1, Matrice_dilatation3, h, l, n);
+  dilatation_3(SigmaDelta_step4, Matrice_dilatation3, h, l, n);
   save_all_image(Matrice_dilatation3,h,l,n,"./car3_out_dilatation_3/","car_3_out");
 
   // ### EROSION 3 ###
   uint8 ***Matrice_erosion3 = init_tab(h, l, n);
-  erosion_3(SigmaDelta_step1, Matrice_erosion3, h, l, n);
+  erosion_3(Matrice_dilatation3, Matrice_erosion3, h, l, n);
   save_all_image(Matrice_erosion3,h,l,n,"./car3_out_erosion_3/","car_3_out");
-
+  //ouverture(SigmaDelta_step4, Matrice_erosion3, Matrice_dilatation3,h,l,n);
 
   free_SD(SigmaDelta_step0,h,l,n);
   free_SD(SigmaDelta_step1,h,l,n);
