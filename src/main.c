@@ -41,9 +41,15 @@ uint8*** init_tab(int h, int l, int n){
 
   m = (uint8 ***) malloc((size_t)(n*sizeof(uint8 **)));
 
-  for(int i = 0; i<n ; ++i){
-    m[i] = ui8matrix(0, h, 0, l);
+  for(int k = 0; k<n ; ++k){
+    m[k] = ui8matrix(0, h, 0, l);
+    for(int i = 0; i<h ; ++i){
+      for(int j = 0; j<l; ++j){
+        m[k][i][j] = 0;
+      }
+    }
   }
+
   return m;
 }
 
@@ -115,6 +121,7 @@ int main(int argc, char *argv[])
   // ####  STEP 1  ####
   uint8 ***SigmaDelta_step1 = init_tab(h, l, n);
   copy_ui8matrix_ui8matrix (SigmaDelta_step0[0], 0, h, 0, l, SigmaDelta_step1[0]);
+
   //SigmaDelta_step1[0] = SigmaDelta_step0[0];
   for(int k = 1; k<n; ++k){
     for(int i = 0; i<h ; ++i){
@@ -122,7 +129,7 @@ int main(int argc, char *argv[])
         if(SigmaDelta_step1[k-1][i][j] < SigmaDelta_step0[k][i][j]){
           SigmaDelta_step1[k][i][j] = SigmaDelta_step1[k-1][i][j]+1;
         }
-        if(SigmaDelta_step1[k-1][i][j] > SigmaDelta_step0[k][i][j]){
+        else if(SigmaDelta_step1[k-1][i][j] > SigmaDelta_step0[k][i][j]){
           SigmaDelta_step1[k][i][j] = SigmaDelta_step1[k-1][i][j]-1;
         }
         else{
@@ -144,10 +151,11 @@ int main(int argc, char *argv[])
     }
   save_all_image(SigmaDelta_step2,h,l,n,"./car3_out_step_2/","car_3_out");
 
+
   // ####  STEP 3  ####
   uint8 vmin = 1;
   uint8 vmax = 254;
-  int N = 4;
+  int N = 2;
   uint8 ***SigmaDelta_step3 = init_tab(h, l, n);
 
   for(int i = 0; i<h ; ++i){
@@ -159,10 +167,10 @@ int main(int argc, char *argv[])
   for(int k = 1; k<n; ++k){
     for(int i = 0; i<h ; ++i){
       for(int j = 0; j<l; ++j){
-        if(SigmaDelta_step3[k-1][i][j] < N * SigmaDelta_step2[k][i][j]){
+        if(SigmaDelta_step3[k-1][i][j] < (N * SigmaDelta_step2[k][i][j])){
           SigmaDelta_step3[k][i][j] = SigmaDelta_step3[k-1][i][j]+1;
         }
-        if(SigmaDelta_step3[k-1][i][j] > N * SigmaDelta_step2[k][i][j]){
+        else if(SigmaDelta_step3[k-1][i][j] > (N * SigmaDelta_step2[k][i][j])){
           SigmaDelta_step3[k][i][j] = SigmaDelta_step3[k-1][i][j]-1;
         }
         else{
@@ -173,7 +181,7 @@ int main(int argc, char *argv[])
         }
       }
     }
-  //display_ui8matrix (SigmaDelta_step3[1], nrl, nrh, ncl,  nch, "%2.0u", "voiture");
+  display_ui8matrix (SigmaDelta_step3[1], nrl, nrh, ncl,  nch, "%2.0u", "voiture");
   save_all_image(SigmaDelta_step3,h,l,n,"./car3_out_step_3/","car_3_out");
 
   // ####  STEP 4  ####
@@ -181,11 +189,11 @@ int main(int argc, char *argv[])
   for(int k = 1; k<n; ++k){
     for(int i = 0; i<h ; ++i){
       for(int j = 0; j<l; ++j){
-        if(SigmaDelta_step2[k][i][j] < SigmaDelta_step3[k][i][j]){
-          SigmaDelta_step4[k][i][j] = 0;
+        if(SigmaDelta_step2[k][i][j] <= SigmaDelta_step3[k][i][j]){
+          SigmaDelta_step4[k][i][j] = 255;
         }
         else{
-          SigmaDelta_step4[k][i][j] = 255;
+          SigmaDelta_step4[k][i][j] = 0;
         }
         }
       }
@@ -212,7 +220,7 @@ int main(int argc, char *argv[])
 //
 // uint8** img = LoadPGM_ui8matrix(filename, &nrl, &nrh, &ncl, &nch);
 //
-// //display_ui8matrix (img, nrl, nrh, ncl,  nch, "%2.0f", "voiture");
+// //display_ui8matrix (img, nrl, nrh, ncl,  nch, "%u", "voiture");
 //
 // // nrh = Hauteur
 // // nch = Largeur
