@@ -141,7 +141,7 @@ void test2D(int n)
     // ------------------------- //
 
     b = 2; // 1 for 3x3, 2 for 5x5
-    card = card = card_vfloat32();
+    card = card_vfloat32();
 
     si0 = 0; si1 = n-1;
     sj0 = 0; sj1 = n-1;
