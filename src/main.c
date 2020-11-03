@@ -86,8 +86,8 @@ int main(int argc, char *argv[])
   uint8 ***Matrice_erosion3_o = init_tab(h, l, n);
   uint8 ***Matrice_dilatation3_f2 = init_tab(h, l, n);
   uint8 ***Matrice_erosion3_f2 = init_tab(h, l, n);
-  fermeture(SigmaDelta_step4, Matrice_erosion3_o, Matrice_dilatation3_o,h,l,n);
-  ouverture( Matrice_dilatation3_o, Matrice_erosion3_f2, Matrice_dilatation3_f2,h,l,n);
+  fermeture_5(SigmaDelta_step4, Matrice_erosion3_o, Matrice_dilatation3_o,h,l,n);
+  ouverture_5( Matrice_dilatation3_o, Matrice_erosion3_f2, Matrice_dilatation3_f2,h,l,n);
   save_all_image(Matrice_dilatation3_f2,h,l,n,"./car3_out_fermeture_ouverture_3/","car_3_out");
 
 
