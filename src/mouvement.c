@@ -10,21 +10,22 @@
 #include "mutil.h"
 #include "SD_macro.h"
 
+#define BORD 100
 
 uint8*** init_tab(int h, int l, int n){
   uint8 ***m;
   int nrl=0;
-  int nrh=h;
+  int nrh=h+BORD;
   int ncl=0;
-  int nch=l;
+  int nch=l+BORD;
 
   m = (uint8 ***) malloc((size_t)(n*sizeof(uint8 **)));
 
   for(int k = 0; k<n ; ++k){
-    m[k] = ui8matrix(0, h, 0, l);
-      for(int i = 0; i<h ; ++i){
-        for(int j = 0; j<l; ++j){
-          m[k][i][j] = 0;
+    m[k] = ui8matrix(0, h+BORD, 0, l+BORD);
+      for(int i = 0; i<h+BORD ; ++i){
+        for(int j = 0; j<l+BORD; ++j){
+          m[k][i][j] = 255;
         }
       }
     }
@@ -37,9 +38,9 @@ uint8*** init_tab(int h, int l, int n){
 // l : largeur de l'image
 // n : nombre d'images
 void SD_step_0(uint8*** SigmaDelta_step0, int h, int l, int n){
-    int nrl=0;
+    int nrl=BORD;
     int nrh=h;
-    int ncl=0;
+    int ncl=BORD;
     int nch=l;
     char * path = "./car3/";
     char * filename ="car_3";
@@ -65,9 +66,9 @@ void save_all_image(uint8 *** SigmaDelta_step,int h, int l, int n, char * path, 
   // char * path = "./car3_out/";
   // char * filename ="car_3_out";
   int nrl=0;
-  int nrh=h;
+  int nrh=h+BORD;
   int ncl=0;
-  int nch=l;
+  int nch=l+BORD;
   int ndigit = 3;
   char *extension = "pgm";
   char *complete_filename = (char*) malloc(128*sizeof(char));
