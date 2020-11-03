@@ -22,6 +22,8 @@
 //#define NR_END 1
 //#define FREE_ARG char*
 
+
+
 long nr_end = NR_END;
 
 /* ------------------------- */
@@ -803,8 +805,8 @@ void MLoadPGM_ui8matrix(char *filename, int nrl, int nrh, int ncl, int nch, uint
     height = atoi(readitem(file, buffer));
     gris   = atoi(readitem(file, buffer));
 
-    for(i=0; i<height; i++) {
-        ReadPGMrow(file, width, m[i]);
+    for(i=BORD/2; i<height+BORD/2; i++) {
+        ReadPGMrow(file, width, m[i]+BORD/2);
     }
 
     fclose(file);
