@@ -25,7 +25,7 @@ uint8*** init_tab(int h, int l, int n){
     m[k] = ui8matrix(0, h+BORD, 0, l+BORD);
       for(int i = 0; i<h+BORD ; ++i){
         for(int j = 0; j<l+BORD; ++j){
-          m[k][i][j] = -1;
+          m[k][i][j] = 100;
         }
       }
     }
