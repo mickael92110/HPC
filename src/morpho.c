@@ -10,77 +10,26 @@
 #include "mutil.h"
 #include "SD_macro.h"
 
-uint8 max_3(uint8 *** SigmaDelta_step, int i, int j, int n, int h, int l) {
-  uint8 max =0;
-  if((i == 0) & (j == 0)) {
-    for (int a = 0 ; a < 2; a++){
-      for(int b = 0 ; b < 2 ; b++ ){
-        max = max(max, SigmaDelta_step[n][i+a][j+b]);
-      }
-    }
-  }
-  else if ((i == h-1) & (j==0)){
-    for (int a = -1 ; a < 1; a++){
-      for(int b = 0 ; b < 2 ; b++ ){
-        max = max(max, SigmaDelta_step[n][i+a][j+b]);
-      }
-    }
-  }
-  else if ((i == 0) & (j==l-1)){
-    for (int a = 0 ; a < 2; a++){
-      for(int b = -1 ; b < 1 ; b++ ){
-        max = max(max, SigmaDelta_step[n][i+a][j+b]);
-      }
-    }
-  }
+uint8 max_3(uint8 *** SigmaDelta_step, int i, int j, int n) {
 
-  else if ((i == h-1) & (j==l-1)){
-    for (int a = -1 ; a < 1; a++){
-      for(int b = -1 ; b < 1 ; b++ ){
-        max = max(max, SigmaDelta_step[n][i+a][j+b]);
-      }
+  for (int a = -1 ; a < 2; a++){
+    for(int b = -1; b < 2 ; b++ ){
+        if (SigmaDelta_step[n][i+a][j+b] == 255 ) {
+          return 255;
+        }
     }
   }
-  else if (i == h-1){
-    for (int a = -1 ; a < 1; a++){
-      for(int b = -1 ; b < 2 ; b++ ){
-        max = max(max, SigmaDelta_step[n][i+a][j+b]);
-      }
-    }
-  }
-  else if (j == l-1){
-    for (int a = -1 ; a < 2; a++){
-      for(int b = -1 ; b < 1 ; b++ ){
-        max = max(max, SigmaDelta_step[n][i+a][j+b]);
-      }
-    }
-  }
+  return 0;
+}
 
-  else if (i == 0){
-    for (int a = 0 ; a < 2; a++){
-      for(int b = -1 ; b < 2 ; b++ ){
-        max = max(max, SigmaDelta_step[n][i+a][j+b]);
+void dilatation_3(uint8 *** SigmaDelta_step, uint8 *** Matrice_dilatation, int h, int l, int n) {
+  for(int k = 0; k<n; k++){
+    for(int i = BORD/2; i<h+BORD/2 ; i++){
+      for(int j = BORD/2; j<l+BORD/2 ; j++){
+        Matrice_dilatation[k][i][j] = max_3(SigmaDelta_step, i, j, k);
       }
     }
   }
-  else if (j==0){
-    for (int a = -1 ; a < 2; a++){
-      for(int b = 0 ; b < 2 ; b++ ){
-        max = max(max, SigmaDelta_step[n][i+a][j+b]);
-      }
-    }
-  }
-
-  else {
-    for (int a = -1 ; a < 2; a++){
-      for(int b = -1; b < 2 ; b++ ){
-        max = max(max, SigmaDelta_step[n][i+a][j+b]);
-      }
-    }
-
-  }
-
-  return max;
 }
 
 uint8 min_3(uint8 *** SigmaDelta_step, int i, int j, int n, int h, int l) {
@@ -156,20 +105,12 @@ uint8 min_3(uint8 *** SigmaDelta_step, int i, int j, int n, int h, int l) {
   return min;
 }
 
-void dilatation_3(uint8 *** SigmaDelta_step, uint8 *** Matrice_dilatation, int h, int l, int n) {
-  for(int k = 0; k<n; k++){
-    for(int i = 0; i<h ; i++){
-      for(int j = 0; j<l; j++){
-        Matrice_dilatation[k][i][j] = max_3(SigmaDelta_step, i, j, k, h, l);
-      }
-    }
-  }
-}
+
 
 void erosion_3(uint8 *** SigmaDelta_step, uint8 *** Matrice_erosion3, int h, int l, int n) {
   for(int k = 0; k<n; ++k){
-    for(int i = 0; i<h ; ++i){
-      for(int j = 0; j<l; ++j){
+    for(int i = 0; i<h+BORD ; ++i){
+      for(int j = 0; j<l+BORD; ++j){
         Matrice_erosion3[k][i][j] = min_3(SigmaDelta_step, i, j, k, h, l);
       }
     }

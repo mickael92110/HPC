@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
   SD_step_1(SigmaDelta_step0, SigmaDelta_step1, h, l, n);
   save_all_image(SigmaDelta_step1,h,l,n,"./car3_out_step_1/","car_3_out");
 
-  
+
   // ####  STEP 2  ####
   uint8 ***SigmaDelta_step2 = init_tab(h, l, n);
   SD_step_2(SigmaDelta_step0, SigmaDelta_step1, SigmaDelta_step2, h, l, n);
@@ -86,19 +86,28 @@ int main(int argc, char *argv[])
   dilatation_3(SigmaDelta_step4, Matrice_dilatation3, h, l, n);
   save_all_image(Matrice_dilatation3,h,l,n,"./car3_out_dilatation_3/","car_3_out");
 
-  // ### EROSION 3 ###
-  uint8 ***Matrice_erosion3 = init_tab(h, l, n);
-  erosion_3(Matrice_dilatation3, Matrice_erosion3, h, l, n);
-  save_all_image(Matrice_erosion3,h,l,n,"./car3_out_erosion_3/","car_3_out");
-  //ouverture(SigmaDelta_step4, Matrice_erosion3, Matrice_dilatation3,h,l,n);
+  // // ### EROSION 3 ###
+  // uint8 ***Matrice_erosion3 = init_tab(h, l, n);
+  // //erosion_3(Matrice_dilatation3, Matrice_erosion3, h, l, n);
+  // //save_all_image(Matrice_erosion3,h,l,n,"./car3_out_erosion_3/","car_3_out");
+
+  // ### Ouverture -> Fermeture ###
+  // ouverture(SigmaDelta_step4, Matrice_erosion3, Matrice_dilatation3,h,l,n);
+  // fermeture(SigmaDelta_step4, Matrice_erosion3, Matrice_dilatation3,h,l,n);
+  // save_all_image(Matrice_dilatation3,h,l,n,"./car3_out_dilatation_3/","car_3_out");
+  // save_all_image(Matrice_erosion3,h,l,n,"./car3_out_erosion_3/","car_3_out");
+
+  // fermeture(SigmaDelta_step4, Matrice_erosion3, Matrice_dilatation3,h,l,n);
+
+
 
   free_SD(SigmaDelta_step0,h,l,n);
   free_SD(SigmaDelta_step1,h,l,n);
   free_SD(SigmaDelta_step2,h,l,n);
   free_SD(SigmaDelta_step3,h,l,n);
   free_SD(SigmaDelta_step4,h,l,n);
-  free_SD(Matrice_dilatation3,h,l,n);
-  free_SD(Matrice_erosion3,h,l,n);
+  // free_SD(Matrice_dilatation3,h,l,n);
+  // free_SD(Matrice_erosion3,h,l,n);
 
     return 0;
 }
