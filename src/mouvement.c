@@ -10,6 +10,8 @@
 #include "mutil.h"
 #include "SD_macro.h"
 
+#include "mouvement.h"
+
 
 
 uint8*** init_tab(int h, int l, int n){

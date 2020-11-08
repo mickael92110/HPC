@@ -14,6 +14,8 @@
 
 #include "mutil.h"
 #include "mouvement.h"
+#include "mouvement_SIMD.h"
+
 #include "SD_macro.h"
 #include "morpho.h"
 
@@ -25,7 +27,7 @@
 //#include "simd2D.h"
 
 
-
+  
 void info(void)
 {
 #ifdef ENABLE_BENCHMARK
@@ -42,68 +44,89 @@ int main(int argc, char *argv[])
 {
   long h = 240;
   long l = 320;
-  int  n = 200;
+  int n = 200;
   int nrl=0;
-  int nrh=h;
+  int nrh=h-1;
   int ncl=0;
-  int nch=l;
-  char *format = "%6.2u ";
+  int nch=l-1;
 
-  // ####  STEP 0  ####
-  uint8 ***SigmaDelta_step0 = init_tab(h, l, n);
-  SD_step_0(SigmaDelta_step0, h, l, n);
-  save_all_image(SigmaDelta_step0,h,l,n,"./car3_out_step_0/","car_3_out");
-
-  // ####  STEP 1  ####
-  uint8 ***SigmaDelta_step1 = init_tab(h, l, n);
-  copy_ui8matrix_ui8matrix (SigmaDelta_step0[0], 0, h+BORD, 0, l+BORD, SigmaDelta_step1[0]);
-  SD_step_1(SigmaDelta_step0, SigmaDelta_step1, h, l, n);
-  save_all_image(SigmaDelta_step1,h,l,n,"./car3_out_step_1/","car_3_out");
+  vuint8*** SigmaDelta_step0_SIMD = init_tab_SIMD(nrl,nrh,ncl,nch,n);
+  SD_step_0_SIMD(SigmaDelta_step0_SIMD, h,l, n);
+  save_all_image_SIMD(SigmaDelta_step0_SIMD,h,l,n, "./car3_out_step_0_SIMD/","car_3_out");
+  free_SD_SIMD(SigmaDelta_step0_SIMD,nrl,nrh,ncl,nch,n);
 
 
-  // ####  STEP 2  ####
-  uint8 ***SigmaDelta_step2 = init_tab(h, l, n);
-  SD_step_2(SigmaDelta_step0, SigmaDelta_step1, SigmaDelta_step2, h, l, n);
-  save_all_image(SigmaDelta_step2,h,l,n,"./car3_out_step_2/","car_3_out");
-
-  // ####  STEP 3  ####
-  uint8 vmin = 1;
-  uint8 vmax = 254;
-  int N = 4;
-  uint8 ***SigmaDelta_step3 = init_tab(h, l, n);
-  SD_step_3(SigmaDelta_step2, SigmaDelta_step3, h, l, n, vmin, vmax, N);
-  //display_ui8matrix (SigmaDelta_step3[1], nrl, nrh, ncl,  nch, "%2.0u", "voiture");
-  save_all_image(SigmaDelta_step3,h,l,n,"./car3_out_step_3/","car_3_out");
-
-  // ####  STEP 4  ####
-  uint8 ***SigmaDelta_step4 = init_tab(h, l, n);
-  SD_step_4(SigmaDelta_step2,SigmaDelta_step3,SigmaDelta_step4, h,l,n);
-  save_all_image(SigmaDelta_step4,h,l,n,"./car3_out_step_4/","car_3_out");
-  //display_ui8matrix(SigmaDelta_step4[1],nrl,nrh,ncl,nch,format, "step4");
-
-  // ### Fermeture - Ouverture ###
-  uint8 ***Matrice_dilatation3_o = init_tab(h, l, n);
-  uint8 ***Matrice_erosion3_o = init_tab(h, l, n);
-  uint8 ***Matrice_dilatation3_f2 = init_tab(h, l, n);
-  uint8 ***Matrice_erosion3_f2 = init_tab(h, l, n);
-  fermeture_5(SigmaDelta_step4, Matrice_erosion3_o, Matrice_dilatation3_o,h,l,n);
-  ouverture_5( Matrice_dilatation3_o, Matrice_erosion3_f2, Matrice_dilatation3_f2,h,l,n);
-  save_all_image(Matrice_dilatation3_f2,h,l,n,"./car3_out_fermeture_ouverture_3/","car_3_out");
 
 
-  free_SD(SigmaDelta_step0,h,l,n);
-  free_SD(SigmaDelta_step1,h,l,n);
-  free_SD(SigmaDelta_step2,h,l,n);
-  free_SD(SigmaDelta_step3,h,l,n);
-  free_SD(SigmaDelta_step4,h,l,n);
-  free_SD(Matrice_dilatation3_o,h,l,n);
-  free_SD(Matrice_erosion3_o,h,l,n);
-  free_SD(Matrice_dilatation3_f2,h,l,n);
-  free_SD(Matrice_erosion3_f2,h,l,n);
-
-
-    return 0;
+  return 0;
 }
+
+// ##### ALGO DE BASE FONCTIONNEL ######
+// long h = 240;
+// long l = 320;
+// int  n = 200;
+// int nrl=0;
+// int nrh=h;
+// int ncl=0;
+// int nch=l;
+// char *format = "%6.2u ";
+//
+// // ####  STEP 0  ####
+// uint8 ***SigmaDelta_step0 = init_tab(h, l, n);
+// SD_step_0(SigmaDelta_step0, h, l, n);
+// save_all_image(SigmaDelta_step0,h,l,n,"./car3_out_step_0/","car_3_out");
+//
+// // ####  STEP 1  ####
+// uint8 ***SigmaDelta_step1 = init_tab(h, l, n);
+// copy_ui8matrix_ui8matrix (SigmaDelta_step0[0], 0, h+BORD, 0, l+BORD, SigmaDelta_step1[0]);
+// SD_step_1(SigmaDelta_step0, SigmaDelta_step1, h, l, n);
+// save_all_image(SigmaDelta_step1,h,l,n,"./car3_out_step_1/","car_3_out");
+//
+//
+// // ####  STEP 2  ####
+// uint8 ***SigmaDelta_step2 = init_tab(h, l, n);
+// SD_step_2(SigmaDelta_step0, SigmaDelta_step1, SigmaDelta_step2, h, l, n);
+// save_all_image(SigmaDelta_step2,h,l,n,"./car3_out_step_2/","car_3_out");
+//
+// // ####  STEP 3  ####
+// uint8 vmin = 1;
+// uint8 vmax = 254;
+// int N = 4;
+// uint8 ***SigmaDelta_step3 = init_tab(h, l, n);
+// SD_step_3(SigmaDelta_step2, SigmaDelta_step3, h, l, n, vmin, vmax, N);
+// //display_ui8matrix (SigmaDelta_step3[1], nrl, nrh, ncl,  nch, "%2.0u", "voiture");
+// save_all_image(SigmaDelta_step3,h,l,n,"./car3_out_step_3/","car_3_out");
+//
+// // ####  STEP 4  ####
+// uint8 ***SigmaDelta_step4 = init_tab(h, l, n);
+// SD_step_4(SigmaDelta_step2,SigmaDelta_step3,SigmaDelta_step4, h,l,n);
+// save_all_image(SigmaDelta_step4,h,l,n,"./car3_out_step_4/","car_3_out");
+// //display_ui8matrix(SigmaDelta_step4[1],nrl,nrh,ncl,nch,format, "step4");
+//
+// // ### Fermeture - Ouverture ###
+// uint8 ***Matrice_dilatation3_o = init_tab(h, l, n);
+// uint8 ***Matrice_erosion3_o = init_tab(h, l, n);
+// uint8 ***Matrice_dilatation3_f2 = init_tab(h, l, n);
+// uint8 ***Matrice_erosion3_f2 = init_tab(h, l, n);
+// fermeture_5(SigmaDelta_step4, Matrice_erosion3_o, Matrice_dilatation3_o,h,l,n);
+// ouverture_5( Matrice_dilatation3_o, Matrice_erosion3_f2, Matrice_dilatation3_f2,h,l,n);
+// save_all_image(Matrice_dilatation3_f2,h,l,n,"./car3_out_fermeture_ouverture_3/","car_3_out");
+//
+//
+// free_SD(SigmaDelta_step0,h,l,n);
+// free_SD(SigmaDelta_step1,h,l,n);
+// free_SD(SigmaDelta_step2,h,l,n);
+// free_SD(SigmaDelta_step3,h,l,n);
+// free_SD(SigmaDelta_step4,h,l,n);
+// free_SD(Matrice_dilatation3_o,h,l,n);
+// free_SD(Matrice_erosion3_o,h,l,n);
+// free_SD(Matrice_dilatation3_f2,h,l,n);
+// free_SD(Matrice_erosion3_f2,h,l,n);
+//
+
+// #############################################
+
+
 
 // Test load image et save image
 /*#############################################################################*/

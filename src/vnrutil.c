@@ -2515,13 +2515,13 @@ void display_vui8matrix(vuint8 **vX, int i0, int i1, int j0, int j1, char *forma
 {
     int i, j;
     vuint8 x;
-    //vuint8 *vXi;
-    //uint8 *sXi;
+    vuint8 *vXi;
+    uint8 *sXi;
 
     if(name != NULL)
         printf("%s\n", name);
 
-    /*for(i=i0; i<=i1; i++) {
+    for(i=i0; i<=i1; i++) {
         vXi = vX[i];
         sXi = (uint8*) &vX[i][j0]; sXi -= j0;  // Beware of pointer arithmetic
         for(j=j0; j<=j1; j++) {
@@ -2529,17 +2529,17 @@ void display_vui8matrix(vuint8 **vX, int i0, int i1, int j0, int j1, char *forma
         }
         printf("\n");
     }
-    printf("\n");*/
-
-    for(i=i0; i<=i1; i++) {
-        for(j=j0; j<=j1; j++) {
-            //x = vec_ld(0, &vX[i][j]);
-            x = _mm_load_si128(&vX[i][j]);
-            display_vuint8(x, format, NULL);
-        }
-        printf("\n");
-    }
     printf("\n");
+
+    // for(i=i0; i<=i1; i++) {
+    //     for(j=j0; j<=j1; j++) {
+    //         //x = vec_ld(0, &vX[i][j]);
+    //         x = _mm_load_si128(&vX[i][j]);
+    //         display_vuint8(x, format, NULL);
+    //     }
+    //     printf("\n");
+    // }
+    // printf("\n");
 }
 /* ---------------------------------------------------------------------------------------- */
 void display_vsi8matrix(vsint8 **vX, int i0, int i1, int j0, int j1, char *format, char *name)

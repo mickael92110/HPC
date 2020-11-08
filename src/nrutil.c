@@ -765,9 +765,14 @@ uint8** LoadPGM_ui8matrix(char *filename, int *nrl, int *nrh, int *ncl, int *nch
   *ncl = 0;
   *nch = width - 1;
   m = ui8matrix(*nrl, *nrh, *ncl, *nch);
+  for(int i = 0; i<height ; ++i){
+    for(int j = 0; j<width; ++j){
+      m[i][j] = 255;
+    }
+  }
 
   for(i=0; i<height; i++) {
-    ReadPGMrow(file, width, m[i]);
+      ReadPGMrow(file, width, m[i]);
   }
 
   fclose(file);
