@@ -19,6 +19,7 @@ extern "C" {
 
 #define NR_END 0
 #define FREE_ARG char*
+
 #define BORD 100
 
 extern long nr_end;

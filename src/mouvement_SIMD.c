@@ -9,9 +9,11 @@
 
 #include "mutil.h"
 #include "SD_macro.h"
+#include "simd_macro.h"
 
 #include "mouvement_SIMD.h"
 
+#define CARD 16
 
 vuint8*** init_tab_SIMD(int nrl,int nrh,int ncl,int nch, int n){
   vuint8 ***m;
@@ -25,7 +27,7 @@ vuint8*** init_tab_SIMD(int nrl,int nrh,int ncl,int nch, int n){
   for(int k = 0; k<n ; ++k){
     m[k] = vui8matrix_s (nrl,nrh,ncl,nch);
       for(int i = 0; i<nrh+1 ; ++i){
-        for(int j = 0; j<(nch/16)+1; ++j){
+        for(int j = 0; j<(nch/CARD)+1; ++j){
           m[k][i][j] = init_vuint8(100);
         }
       }
@@ -54,8 +56,8 @@ void SD_step_0_SIMD(vuint8*** SigmaDelta_step0_SIMD, int h, int l, int n){
       //SavePGM_ui8matrix(buffer ,nrl, nrh,  ncl,  nch, complete_filename);
 
       for(int i = 0; i < h ; ++i){
-        for(int j = 0 ; j < l ; j += 16){
-          SigmaDelta_step0_SIMD[k][i+BORD/2][index2+3] = init_vuint8_all(
+        for(int j = 0 ; j < l ; j += CARD){
+          SigmaDelta_step0_SIMD[k][i+BORD/2][index2+((BORD/2)/CARD)] = init_vuint8_all(
             buffer[i][j+0], buffer[i][j+1], buffer[i][j+2], buffer[i][j+3],
             buffer[i][j+4], buffer[i][j+5], buffer[i][j+6], buffer[i][j+7],
             buffer[i][j+8], buffer[i][j+9], buffer[i][j+10], buffer[i][j+11],
@@ -98,24 +100,41 @@ void save_all_image_SIMD(vuint8 *** SigmaDelta_step,int h, int l, int n, char * 
 }
 
 
-// void SD_step_1_SIMD(uint8*** SigmaDelta_step0, uint8*** SigmaDelta_step1, int h, int l, int n) {
-//   for(int k = 1; k<n; ++k){
-//     for(int i = BORD/2; i<h+BORD/2 ; ++i){
-//       for(int j = BORD/2; j<l+BORD/2 ; ++j){
-//         if(SigmaDelta_step1[k-1][i][j] < SigmaDelta_step0[k][i][j]){
-//           SigmaDelta_step1[k][i][j] = SigmaDelta_step1[k-1][i][j]+1;
-//         }
-//         else if(SigmaDelta_step1[k-1][i][j] > SigmaDelta_step0[k][i][j]){
-//           SigmaDelta_step1[k][i][j] = SigmaDelta_step1[k-1][i][j]-1;
-//         }
-//         else{
-//           SigmaDelta_step1[k][i][j] = SigmaDelta_step1[k-1][i][j];
-//         }
-//       }
-//     }
-//   }
-// }
-//
+void SD_step_1_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, int h, int l, int n) {
+
+  vuint8 k1 = _mm_set1_epi8 (50);
+  vuint8 k0 = _mm_set1_epi8 (0);
+  vuint8 s,a,b,c;
+
+  for(int k = 0; k<n; ++k){
+    for(int i = 0; i<h+1 ; ++i){
+      for(int j = 0; j<l/CARD; ++j){
+        if(k == 0 ){
+          SigmaDelta_step1[k][i+BORD/2][j+((BORD/2)/CARD)] = _mm_add_epi8(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)],k0);
+        }
+        else{
+          //c = _mm_add_epi8(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)],k0);
+          s = _mm_add_epi8(SigmaDelta_step1[k][i+BORD/2][j+((BORD/2)/CARD)],k0);
+          a = _mm_add_epi8(SigmaDelta_step1[k-1][i+BORD/2][j+((BORD/2)/CARD)],k0);
+          b = _mm_add_epi8(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)],k0);
+          s = _mm_add_epi8(b,k1);
+          //SigmaDelta_step1[k][i+BORD/2][j+((BORD/2)/CARD)] = s;
+          c = lt_plus_1(s,a,b);
+          c = lt_moins_1(s,a,b);
+
+          if(k == 1){
+            display_vuint8(s,"%4.u","\ns\n");
+            display_vuint8(a,"%4.u","\na\n");
+            display_vuint8(b,"%4.u","\nb\n");
+            display_vuint8(c,"%4.u","\nc\n");
+            printf("\n");
+          }
+        }
+      }
+    }
+  }
+}
+
 // void SD_step_2_SIMD(uint8*** SigmaDelta_step0, uint8*** SigmaDelta_step1, uint8*** SigmaDelta_step2, int h, int l, int n){
 //   for(int k = 1; k<n; ++k){
 //     for(int i = BORD/2; i<h+BORD/2 ; ++i){

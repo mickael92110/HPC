@@ -8,6 +8,12 @@
 
 // a remplir
 
+// Compare a et b et ajoute 1 ou -1 si a < b ou si a > b
+#define lt_plus_1(s,a,b) _mm_add_epi8(s,_mm_and_si128(_mm_cmplt_epi8(a, b),_mm_set1_epi8 (0)))
+#define lt_moins_1(s,a,b) _mm_sub_epi8(s,_mm_and_si128(_mm_cmplt_epi8(b, a),_mm_set1_epi8 (0)))
+
+
+
 #define vec_left1(v0, v1)  _mm_shuffle_ps(_mm_shuffle_ps(v0,v1, _MM_SHUFFLE(0,0,3,3)),v1, _MM_SHUFFLE(2,1,2,1))
 #define vec_left2(v0, v1)  _mm_shuffle_ps(v0,v1, _MM_SHUFFLE(1,0,3,2))
 #define vec_left3(v0, v1)  _mm_shuffle_ps(v0,_mm_shuffle_ps(v0,v1, _MM_SHUFFLE(0,0,3,3)), _MM_SHUFFLE(2,1,2,1))

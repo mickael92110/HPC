@@ -17,6 +17,7 @@
 #include "mouvement_SIMD.h"
 
 #include "SD_macro.h"
+#include "simd_macro.h"
 #include "morpho.h"
 
 #ifndef max
@@ -27,7 +28,7 @@
 //#include "simd2D.h"
 
 
-  
+
 void info(void)
 {
 #ifdef ENABLE_BENCHMARK
@@ -53,8 +54,13 @@ int main(int argc, char *argv[])
   vuint8*** SigmaDelta_step0_SIMD = init_tab_SIMD(nrl,nrh,ncl,nch,n);
   SD_step_0_SIMD(SigmaDelta_step0_SIMD, h,l, n);
   save_all_image_SIMD(SigmaDelta_step0_SIMD,h,l,n, "./car3_out_step_0_SIMD/","car_3_out");
-  free_SD_SIMD(SigmaDelta_step0_SIMD,nrl,nrh,ncl,nch,n);
 
+  vuint8*** SigmaDelta_step1_SIMD = init_tab_SIMD(nrl,nrh,ncl,nch,n);
+  SD_step_1_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD, h,l,n);
+  save_all_image_SIMD(SigmaDelta_step1_SIMD,h,l,n, "./car3_out_step_1_SIMD/","car_3_out");
+
+  free_SD_SIMD(SigmaDelta_step0_SIMD,nrl,nrh,ncl,nch,n);
+  free_SD_SIMD(SigmaDelta_step1_SIMD,nrl,nrh,ncl,nch,n);
 
 
 
