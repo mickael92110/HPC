@@ -9,8 +9,8 @@
 // a remplir
 
 // Compare a et b et ajoute 1 ou -1 si a < b ou si a > b
-#define lt_plus_1(s,a,b) _mm_add_epi8(s,_mm_and_si128(_mm_cmplt_epi8(a, b),_mm_set1_epi8 (0)))
-#define lt_moins_1(s,a,b) _mm_sub_epi8(s,_mm_and_si128(_mm_cmplt_epi8(b, a),_mm_set1_epi8 (0)))
+#define lt_plus_1(s,a,b) _mm_add_epi8(s,_mm_and_si128(_mm_cmplt_epi8(a, b),_mm_set1_epi8 ((char)1)))
+#define lt_moins_1(s,a,b) _mm_sub_epi8(s,_mm_and_si128(_mm_cmplt_epi8(b, a),_mm_set1_epi8 ((char)1)))
 
 
 

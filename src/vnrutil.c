@@ -524,7 +524,7 @@ vuint8 **vui8matrix_s(int i0, int i1, int j0, int j1)
     int vi1 = i1;
     int vj0, vj1;
     s2v(i0, i1, j0, j1, c, &vi0, &vi1, &vj0, &vj1);
-    return vui8matrix(vi0, vi1, vj0, vj1);
+    return vui8matrix(vi0, vi1, vj0, vj1); // = int nrl, int nrh, int ncl, int nch
 }
 /* ----------------------------------------------- */
 vsint8 **vsi8matrix_s(int i0, int i1, int j0, int j1)
@@ -872,8 +872,13 @@ uint8 **ui8matrix_wrap(uint8 **s, int si0, int si1, int sj0, int sj1, vuint8 **v
     s2v(si0, si1, sj0, sj1, 16, &vi0, &vi1, &vj0, &vj1);
     v2m(vi0, vi1, vj0, vj1, 16, &mi0, &mi1, &mj0, &mj1);
 
+    // printf("vi0 = %d, vi1=%d, vj0=%d, vj1=%d\n",vi0, vi1, vj0, vj1);
+    // printf("mi0 = %d, mi1=%d, mj0=%d, mj1=%d\n",mi0, mi1, mj0, mj1);
+
+
     width = mj1-mj0+1;
     height= mi1-mi0+1;
+    //printf("width = %d, height = %d\n",width,height);
     pitch = width; // everything is aligned, padding - if exists - is already integrated
 
     // map rows and set pointers to them
