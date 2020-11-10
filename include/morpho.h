@@ -6,6 +6,8 @@
 #ifndef __MORPHO_H__
 #define __MORPHO_H__
 
+#include "mouvement.h"
+
 
 uint8 max_3(uint8 *** SigmaDelta_step, int i, int j, int n);
 uint8 min_3(uint8 *** SigmaDelta_step, int i, int j, int n);

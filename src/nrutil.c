@@ -810,8 +810,12 @@ void MLoadPGM_ui8matrix(char *filename, int nrl, int nrh, int ncl, int nch, uint
     height = atoi(readitem(file, buffer));
     gris   = atoi(readitem(file, buffer));
 
-    for(i=BORD/2; i<height+BORD/2; i++) {
-        ReadPGMrow(file, width, m[i]+BORD/2);
+    // for(i=BORD/2; i<height+BORD/2; i++) {
+    //     ReadPGMrow(file, width, m[i]+BORD/2);
+    // }
+
+    for(i=0; i<height; i++) {
+        ReadPGMrow(file, width, m[i]);
     }
 
     fclose(file);

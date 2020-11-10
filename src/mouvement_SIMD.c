@@ -131,11 +131,11 @@ void SD_step_1_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, int 
 
 
           if(k == 1){
-            display_vuint8(s,"%4.u","\ns\n");
-            display_vuint8(a,"%4.u","\na\n");
-            display_vuint8(b,"%4.u","\nb\n");
-            //display_vuint8(c,"%4.u","\nc\n");
-            printf("\n");
+            // display_vuint8(s,"%4.u","\ns\n");
+            // display_vuint8(a,"%4.u","\na\n");
+            // display_vuint8(b,"%4.u","\nb\n");
+            // //display_vuint8(c,"%4.u","\nc\n");
+            // printf("\n");
           }
         }
       }

@@ -5,7 +5,7 @@
 #ifndef __MOUVEMENT_SIMD_H__
 #define __MOUVEMENT_SIMD_H__
 
-
+#include "mouvement.h"
 
 vuint8*** init_tab_SIMD(int nrl,int nrh,int ncl,int nch, int n);
 void SD_step_0_SIMD(vuint8*** SigmaDelta_step0, int h, int l, int n);

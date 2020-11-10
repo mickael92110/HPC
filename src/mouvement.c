@@ -32,7 +32,7 @@ uint8*** init_tab(int h, int l, int n){
       }
     }
 
-  return m;
+  return m; 
 }
 
 //Cette fonction va remplir le tableau d'images

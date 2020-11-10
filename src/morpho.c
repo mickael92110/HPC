@@ -10,6 +10,7 @@
 #include "mutil.h"
 #include "SD_macro.h"
 
+#include "morpho.h"
 
 uint8 max_3(uint8 *** SigmaDelta_step, int i, int j, int n) {
   uint8 max = 255;
