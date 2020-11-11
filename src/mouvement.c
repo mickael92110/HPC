@@ -6,9 +6,9 @@
 
 #include "vdef.h"
 #include "vnrutil.h"
+#include "SD_macro.h"
 
 #include "mutil.h"
-#include "SD_macro.h"
 
 #include "mouvement.h"
 
@@ -32,7 +32,7 @@ uint8*** init_tab(int h, int l, int n){
       }
     }
 
-  return m; 
+  return m;
 }
 
 //Cette fonction va remplir le tableau d'images
@@ -61,8 +61,8 @@ void free_SD(uint8 *** m,int h, int l, int n){
 }
 
 void save_all_image(uint8 *** SigmaDelta_step,int h, int l, int n, char * path, char * filename){
-  // char * path = "./car3_out/";
-  // char * filename ="car_3_out";
+  //char * path = "./car3_out/";
+  //char * filename ="car_3_out";
   int nrl=0;
   int nrh=h+BORD;
   int ncl=0;

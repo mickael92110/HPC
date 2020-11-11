@@ -15,15 +15,11 @@
 #include "mutil.h"
 #include "mouvement.h"
 #include "mouvement_SIMD.h"
-
 #include "SD_macro.h"
 #include "simd_macro.h"
 #include "morpho.h"
+#include "morpho_SIMD.h"
 
-#ifndef max
-#define max(a,b) (((a) > (b)) ? (a) : (b))
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
 //#include "simd1D.h"
 //#include "simd2D.h"
 
@@ -59,8 +55,19 @@ int main(int argc, char *argv[])
   SD_step_1_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD, h,l,n);
   save_all_image_SIMD(SigmaDelta_step1_SIMD,h,l,n, "./car3_out_step_1_SIMD/","car_3_out");
 
+  vuint8*** Matrice_dilatation = init_tab_SIMD(h,l,n);
+  dilatation_3_SIMD(SigmaDelta_step0_SIMD,Matrice_dilatation, h,l,n);
+  save_all_image_SIMD(Matrice_dilatation,h,l,n, "./car3_out_dilatation_SIMD/","car_3_out");
+
+  vuint8*** Matrice_erosion = init_tab_SIMD(h,l,n);
+  erosion_3_SIMD(SigmaDelta_step0_SIMD,Matrice_erosion, h,l,n);
+  save_all_image_SIMD(Matrice_erosion,h,l,n, "./car3_out_erosion_SIMD/","car_3_out");
+
   free_SD_SIMD(SigmaDelta_step0_SIMD,h,l,n);
   free_SD_SIMD(SigmaDelta_step1_SIMD,h,l,n);
+  free_SD_SIMD(Matrice_dilatation,h,l,n);
+  free_SD_SIMD(Matrice_erosion,h,l,n);
+
 
   return 0;
 }
