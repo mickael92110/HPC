@@ -17,12 +17,12 @@
 #define BORD 32
 
 
-vuint8*** init_tab_SIMD(int nrl,int nrh,int ncl,int nch, int n){
+vuint8*** init_tab_SIMD(int h,int l, int n){
   vuint8 ***m;
-  //int nrl=0;
-  nrh = nrh+BORD;
-  //int ncl=0;
-  nch = nch+BORD;
+  int nrl= 0;
+  int nrh = h+BORD;
+  int ncl= 0;
+  int nch = l+BORD;
 
   m = (vuint8 ***) malloc((size_t)(n*sizeof(vuint8 **)));
 
@@ -74,16 +74,14 @@ void SD_step_0_SIMD(vuint8*** SigmaDelta_step0_SIMD, int h, int l, int n){
     //free_ui8matrix(buffer,nrl,nrh,ncl,nch);
 }
 
-void free_SD_SIMD(vuint8 *** m,int nrl,int nrh,int ncl,int nch, int n){
+void free_SD_SIMD(vuint8 *** m,int h,int l, int n){
     for(int i = 0; i<n ; ++i){
-      free_vui8matrix(m[i],nrl,nrh+BORD,ncl,nch+BORD);
+      free_vui8matrix(m[i],0,h+BORD,0,l+BORD);
     }
     free(m);
 }
 
 void save_all_image_SIMD(vuint8 *** SigmaDelta_step,int h, int l, int n, char * path, char * filename){
-  // char * path = "./car3_out/";
-  // char * filename ="car_3_out";
   int nrl=0;
   int nrh=h+BORD;
   int ncl=0;
@@ -106,37 +104,43 @@ void save_all_image_SIMD(vuint8 *** SigmaDelta_step,int h, int l, int n, char * 
 
 void SD_step_1_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, int h, int l, int n) {
 
-  vuint8 k1 = _mm_set1_epi8 (50);
+  vuint8 k1 = _mm_set1_epi8 (1);
   vuint8 k0 = _mm_set1_epi8 (0);
-  vuint8 s,a,b,c;
+  vuint8 a,b,c,n1,n2,d,kt;
 
   for(int k = 0; k<n; ++k){
-    for(int i = 0; i<h+1 ; ++i){
+    for(int i = 0; i<h ; ++i){
       for(int j = 0; j<l/CARD; ++j){
         if(k == 0 ){
           SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))] = _mm_add_epi8(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)],k0);
         }
         else{
-          //c = _mm_add_epi8(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)],k0);
-          //s = SigmaDelta_step1[k][i+BORD/2][j+((BORD/2)/CARD)];
-          a = SigmaDelta_step1[k-1][i+BORD/2][j+(BORD/(2*CARD))];
+
+          //initialisation Mt-1(x) It(x)
+          d = SigmaDelta_step1[k-1][i+BORD/2][j+(BORD/(2*CARD))];
+          a = d;
           b = SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))];
-          s = a;
-          //s = _mm_add_epi8(b,k1);
-          //SigmaDelta_step1[k][i+BORD/2][j+((BORD/2)/CARD)] = s;
-          //s = lt_plus_1(s,a,b);
-          s = lt_moins_1(s,a,b);
 
-          SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))] = s;
+          // Permet de tester si on a des pixel négatif (>127)
+          n1 = _mm_cmplt_epi8 (b,k0);
+          n2 = _mm_cmplt_epi8 (a,k0);
 
+          // Si a < b
+          c =  _mm_cmplt_epi8 (a,b);
+          c = _mm_or_si128(c,n1);
+          c = _mm_xor_si128(c,n2);
+          kt = _mm_and_si128(c,k1);
+          d = _mm_add_epi8(d,kt);
 
-          if(k == 1){
-            // display_vuint8(s,"%4.u","\ns\n");
-            // display_vuint8(a,"%4.u","\na\n");
-            // display_vuint8(b,"%4.u","\nb\n");
-            // //display_vuint8(c,"%4.u","\nc\n");
-            // printf("\n");
-          }
+          //Si a > b
+          c = _mm_cmpgt_epi8 (a,b);
+          c = _mm_or_si128(c,n2);
+          c = _mm_xor_si128(c,n1);
+          kt = _mm_and_si128(c,k1);
+          d = _mm_sub_epi8(d,kt);
+
+          SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))] = d;
+
         }
       }
     }
