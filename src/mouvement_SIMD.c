@@ -198,43 +198,97 @@ void SD_step_2_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, vuin
     }
 }
 
-// void SD_step_3_SIMD(uint8*** SigmaDelta_step2, uint8*** SigmaDelta_step3, int h, int l, int n, uint8 vmin, uint8 vmax, int N){
-//   for(int i = BORD/2; i<h+BORD/2 ; ++i){
-//     for(int j = BORD/2; j<l+BORD/2; ++j){
-//         SigmaDelta_step3[0][i][j] = vmin;
-//       }
-//     }
-//
-//   for(int k = 1; k<n; ++k){
-//     for(int i = BORD/2; i<h+BORD/2 ; ++i){
-//       for(int j = BORD/2; j<l+BORD/2; ++j){
-//         if(SigmaDelta_step3[k-1][i][j] < N * SigmaDelta_step2[k][i][j]){
-//           SigmaDelta_step3[k][i][j] = SigmaDelta_step3[k-1][i][j]+1;
-//         }
-//         else if(SigmaDelta_step3[k-1][i][j] > N * SigmaDelta_step2[k][i][j]){
-//           SigmaDelta_step3[k][i][j] = SigmaDelta_step3[k-1][i][j]-1;
-//         }
-//         else{
-//           SigmaDelta_step3[k][i][j] = SigmaDelta_step3[k-1][i][j];
-//         }
-//         //printf("%u",SigmaDelta_step3[k][i][j] );
-//         SigmaDelta_step3[k][i][j] = max(min(SigmaDelta_step3[k][i][j],vmax),vmin);
-//         }
-//       }
-//     }
-// }
-//
-// void SD_step_4_SIMD(uint8*** SigmaDelta_step2, uint8*** SigmaDelta_step3,uint8*** SigmaDelta_step4, int h, int l, int n){
-//   for(int k = 1; k<n; ++k){
-//     for(int i = BORD/2; i<h+BORD/2 ; ++i){
-//       for(int j = BORD/2; j<l+BORD/2; ++j){
-//         if(SigmaDelta_step2[k][i][j] < SigmaDelta_step3[k][i][j]){
-//           SigmaDelta_step4[k][i][j] = 255;
-//         }
-//         else{
-//           SigmaDelta_step4[k][i][j] = 0;
-//         }
-//         }
-//       }
-//     }
-// }
+void SD_step_3_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, int h, int l, int n, uint8 vmin, uint8 vmax){
+  vmin = vmin-1;
+  vmax = vmax+1;
+
+  vuint8 k1 = _mm_set1_epi8 (1);
+  vuint8 k0 = _mm_set1_epi8 (0);
+  vuint8 a,b,c,n1,n2,d,kt;
+
+  for(int k = 0; k<n; ++k){
+    for(int i = 0; i<h ; ++i){
+      for(int j = 0; j<l/CARD; ++j){
+        if(k == 0 ){
+          SigmaDelta_step3[k][i+BORD/2][j+(BORD/(2*CARD))] = _mm_set1_epi8(vmin);
+        }
+        else{
+
+          //initialisation Vt-1(x) Ot(x)
+          d = SigmaDelta_step3[k-1][i+BORD/2][j+(BORD/(2*CARD))];
+          a = d;
+          b = SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))];
+          b = _mm_add_epi8(b,b); // N = 2
+          b = _mm_add_epi8(b,b); // N = 4
+
+          // Permet de tester si on a des pixel négatif (>127)
+          n1 = _mm_cmplt_epi8 (b,k0);
+          n2 = _mm_cmplt_epi8 (a,k0);
+
+          // Si a < b
+          c =  _mm_cmplt_epi8 (a,b);
+          c = _mm_or_si128(c,n1);
+          c = _mm_xor_si128(c,n2);
+          kt = _mm_and_si128(c,k1);
+          d = _mm_add_epi8(d,kt);
+
+          //Si a > b
+          c = _mm_cmpgt_epi8 (a,b);
+          c = _mm_or_si128(c,n2);
+          c = _mm_xor_si128(c,n1);
+          kt = _mm_and_si128(c,k1);
+          d = _mm_sub_epi8(d,kt);
+
+          //Si = 255 on fait -1
+          c = _mm_cmpeq_epi8 (d,_mm_set1_epi8(vmax));
+          n1= _mm_and_si128(c,k1);
+          d = _mm_sub_epi8(d,n1);
+
+          //Si = 0 on fait +1
+          c = _mm_cmpeq_epi8 (d,_mm_set1_epi8(vmin));
+          n1= _mm_and_si128(c,k1);
+          d = _mm_add_epi8(d,n1);
+
+          SigmaDelta_step3[k][i+BORD/2][j+(BORD/(2*CARD))] = d;
+
+        }
+      }
+    }
+  }
+}
+
+void SD_step_4_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, vuint8*** SigmaDelta_step4, int h, int l, int n){
+  vuint8 k1 = _mm_set1_epi8 (1);
+  vuint8 k0 = _mm_set1_epi8 (0);
+  vuint8 k255 = _mm_set1_epi8 (255);
+  vuint8 a,b,c,n1,n2,d,dn,kn;
+
+  for(int k = 0; k<n; ++k){
+    for(int i = 0; i<h ; ++i){
+      for(int j = 0; j<l/CARD; ++j){
+          //SigmaDelta_step2[k][i][j] = abs(SigmaDelta_step1[k][i][j] - SigmaDelta_step0[k][i][j]);
+          a = SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))];
+          b = SigmaDelta_step3[k][i+BORD/2][j+(BORD/(2*CARD))];
+
+          //n1 à 1 si les valeurs de b > 127
+          //n2 à 1 si les valeurs de a > 127
+          n1 = _mm_cmplt_epi8 (b,k0);
+          n2 = _mm_cmplt_epi8 (a,k0);
+
+          //c à 1 dans les cas ou b > a en signé donc cas problématique en unsigned
+          c = _mm_cmplt_epi8 (a,b);
+          c = _mm_or_si128(c,n2);
+          c = _mm_xor_si128(c,n1);
+          d = _mm_and_si128(c,k255);
+
+          SigmaDelta_step4[k][i+BORD/2][j+(BORD/(2*CARD))] = d;
+          // if(k == 1){
+          //   display_vuint8(SigmaDelta_step1[k][i][j], "%4.0u", "1\n");
+          //   display_vuint8(SigmaDelta_step0[k][i][j], "%4.0u", "0\n");
+          //   display_vuint8(SigmaDelta_step2[k][i][j], "%4.0u", "2\n");
+          //   printf("\n");
+          // }
+        }
+      }
+    }
+}

@@ -59,6 +59,14 @@ int main(int argc, char *argv[])
   SD_step_2_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD,SigmaDelta_step2_SIMD, h,l,n);
   save_all_image_SIMD(SigmaDelta_step2_SIMD,h,l,n, "./car3_out_step_2_SIMD/","car_3_out");
 
+  vuint8*** SigmaDelta_step3_SIMD = init_tab_SIMD(h,l,n);
+  SD_step_3_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,h,l,n,1,254);
+  save_all_image_SIMD(SigmaDelta_step3_SIMD,h,l,n, "./car3_out_step_3_SIMD/","car_3_out");
+
+  vuint8*** SigmaDelta_step4_SIMD = init_tab_SIMD(h,l,n);
+  SD_step_4_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,SigmaDelta_step4_SIMD, h,l,n);
+  save_all_image_SIMD(SigmaDelta_step4_SIMD,h,l,n, "./car3_out_step_4_SIMD/","car_3_out");
+
   // vuint8*** Matrice_dilatation = init_tab_SIMD(h,l,n);
   // dilatation_5_SIMD(SigmaDelta_step0_SIMD,Matrice_dilatation, h,l,n);
   // save_all_image_SIMD(Matrice_dilatation,h,l,n, "./car3_out_dilatation_SIMD/","car_3_out");
@@ -70,6 +78,8 @@ int main(int argc, char *argv[])
   free_SD_SIMD(SigmaDelta_step0_SIMD,h,l,n);
   free_SD_SIMD(SigmaDelta_step1_SIMD,h,l,n);
   free_SD_SIMD(SigmaDelta_step2_SIMD,h,l,n);
+  free_SD_SIMD(SigmaDelta_step3_SIMD,h,l,n);
+  free_SD_SIMD(SigmaDelta_step4_SIMD,h,l,n);
   // free_SD_SIMD(Matrice_dilatation,h,l,n);
   // free_SD_SIMD(Matrice_erosion,h,l,n);
 
