@@ -55,18 +55,23 @@ int main(int argc, char *argv[])
   SD_step_1_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD, h,l,n);
   save_all_image_SIMD(SigmaDelta_step1_SIMD,h,l,n, "./car3_out_step_1_SIMD/","car_3_out");
 
-  vuint8*** Matrice_dilatation = init_tab_SIMD(h,l,n);
-  dilatation_5_SIMD(SigmaDelta_step0_SIMD,Matrice_dilatation, h,l,n);
-  save_all_image_SIMD(Matrice_dilatation,h,l,n, "./car3_out_dilatation_SIMD/","car_3_out");
+  vuint8*** SigmaDelta_step2_SIMD = init_tab_SIMD(h,l,n);
+  SD_step_2_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD,SigmaDelta_step2_SIMD, h,l,n);
+  save_all_image_SIMD(SigmaDelta_step2_SIMD,h,l,n, "./car3_out_step_2_SIMD/","car_3_out");
 
-  vuint8*** Matrice_erosion = init_tab_SIMD(h,l,n);
-  erosion_5_SIMD(SigmaDelta_step0_SIMD,Matrice_erosion, h,l,n);
-  save_all_image_SIMD(Matrice_erosion,h,l,n, "./car3_out_erosion_SIMD/","car_3_out");
+  // vuint8*** Matrice_dilatation = init_tab_SIMD(h,l,n);
+  // dilatation_5_SIMD(SigmaDelta_step0_SIMD,Matrice_dilatation, h,l,n);
+  // save_all_image_SIMD(Matrice_dilatation,h,l,n, "./car3_out_dilatation_SIMD/","car_3_out");
+  //
+  // vuint8*** Matrice_erosion = init_tab_SIMD(h,l,n);
+  // erosion_5_SIMD(SigmaDelta_step0_SIMD,Matrice_erosion, h,l,n);
+  // save_all_image_SIMD(Matrice_erosion,h,l,n, "./car3_out_erosion_SIMD/","car_3_out");
 
   free_SD_SIMD(SigmaDelta_step0_SIMD,h,l,n);
   free_SD_SIMD(SigmaDelta_step1_SIMD,h,l,n);
-  free_SD_SIMD(Matrice_dilatation,h,l,n);
-  free_SD_SIMD(Matrice_erosion,h,l,n);
+  free_SD_SIMD(SigmaDelta_step2_SIMD,h,l,n);
+  // free_SD_SIMD(Matrice_dilatation,h,l,n);
+  // free_SD_SIMD(Matrice_erosion,h,l,n);
 
 
   return 0;

@@ -12,6 +12,7 @@
 #include "simd_macro.h"
 
 #include "mouvement_SIMD.h"
+#include "SD_SIMD_macro.h"
 
 #define CARD 16
 #define BORD 32
@@ -147,16 +148,56 @@ void SD_step_1_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, int 
   }
 }
 
-// void SD_step_2_SIMD(uint8*** SigmaDelta_step0, uint8*** SigmaDelta_step1, uint8*** SigmaDelta_step2, int h, int l, int n){
-//   for(int k = 1; k<n; ++k){
-//     for(int i = BORD/2; i<h+BORD/2 ; ++i){
-//       for(int j = BORD/2; j<l+BORD/2; ++j){
-//           SigmaDelta_step2[k][i][j] = abs(SigmaDelta_step1[k][i][j] - SigmaDelta_step0[k][i][j]);
-//         }
-//       }
-//     }
-// }
-//
+void SD_step_2_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, vuint8*** SigmaDelta_step2, int h, int l, int n){
+  vuint8 k1 = _mm_set1_epi8 (1);
+  vuint8 k0 = _mm_set1_epi8 (0);
+  vuint8 a,b,c,n1,n2,d,dn,kn;
+
+  for(int k = 0; k<n; ++k){
+    for(int i = 0; i<h ; ++i){
+      for(int j = 0; j<l/CARD; ++j){
+          //SigmaDelta_step2[k][i][j] = abs(SigmaDelta_step1[k][i][j] - SigmaDelta_step0[k][i][j]);
+          a = SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))];
+          b = SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))];
+
+          //n1 à 1 si les valeurs de b > 127
+          //n2 à 1 si les valeurs de a > 127
+          n1 = _mm_cmplt_epi8 (b,k0);
+          n2 = _mm_cmplt_epi8 (a,k0);
+
+          //c à 1 dans les cas ou b > a en signé donc cas problématique en unsigned
+          c = _mm_cmplt_epi8 (a,b);
+          c = _mm_xor_si128(c,n2);
+          c = _mm_xor_si128(c,n1);
+
+          //Soustraction en signé
+          d = _mm_sub_epi8(a,b);
+
+          //On met dans kn les cas sans problèmes en unsigned
+          kn = _mm_andnot_si128(c,d);
+
+          //On met dans dn les cas avec problèmes en unsigned
+          dn = _mm_and_si128(d,c);
+          //On fait 255-dn+1 pour résoudre le problème des unsigned
+          dn = _mm_sub_epi8(c,dn);
+          n1 = _mm_and_si128(c,k1);
+          dn = _mm_add_epi8(dn,n1);
+
+          //Enfin on regroupe le tableau des sans problèmes et des problèmes résolu
+          d = _mm_add_epi8(dn,kn);
+
+          SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))] = d;
+          // if(k == 1){
+          //   display_vuint8(SigmaDelta_step1[k][i][j], "%4.0u", "1\n");
+          //   display_vuint8(SigmaDelta_step0[k][i][j], "%4.0u", "0\n");
+          //   display_vuint8(SigmaDelta_step2[k][i][j], "%4.0u", "2\n");
+          //   printf("\n");
+          // }
+        }
+      }
+    }
+}
+
 // void SD_step_3_SIMD(uint8*** SigmaDelta_step2, uint8*** SigmaDelta_step3, int h, int l, int n, uint8 vmin, uint8 vmax, int N){
 //   for(int i = BORD/2; i<h+BORD/2 ; ++i){
 //     for(int j = BORD/2; j<l+BORD/2; ++j){
