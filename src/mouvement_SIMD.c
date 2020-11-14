@@ -106,7 +106,7 @@ void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n){
 void conversion_255_1(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n){
   vuint8 d,k1,vmax,m1;
   k1 = _mm_set1_epi8 (1);
-  vmax = _mm_set1_epi8 (254);
+  vmax = _mm_set1_epi8 (255);
   for(int k = 0; k<n ; ++k){
       for(int i = 0; i<h ; ++i){
         for(int j = 0; j<(l/CARD); ++j){
@@ -114,6 +114,25 @@ void conversion_255_1(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n){
           m1 = SigmaDelta_step4_SIMD[k][i+(BORD/2)][j+(BORD/(2*CARD))];
           d = _mm_cmpeq_epi8(m1,vmax);
           d = _mm_and_si128(d,k1);
+
+          SigmaDelta_step4_SIMD[k][i+(BORD/2)][j+(BORD/(2*CARD))] = d;
+
+        }
+      }
+    }
+}
+
+void conversion_1_255(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n){
+  vuint8 d,k1,vmax,m1;
+  k1 = _mm_set1_epi8 (1);
+  vmax = _mm_set1_epi8 (255);
+  for(int k = 0; k<n ; ++k){
+      for(int i = 0; i<h ; ++i){
+        for(int j = 0; j<(l/CARD); ++j){
+
+          m1 = SigmaDelta_step4_SIMD[k][i+(BORD/2)][j+(BORD/(2*CARD))];
+          d = _mm_cmpeq_epi8(m1,k1);
+          d = _mm_and_si128(d,vmax);
 
           SigmaDelta_step4_SIMD[k][i+(BORD/2)][j+(BORD/(2*CARD))] = d;
 
