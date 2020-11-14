@@ -68,6 +68,11 @@ int main(int argc, char *argv[])
   init_bord(SigmaDelta_step4_SIMD,h,l,n);
   save_all_image_SIMD(SigmaDelta_step4_SIMD,h,l,n, "./car3_out_step_4_SIMD/","car_3_out");
 
+  conversion_255_1(SigmaDelta_step4_SIMD, h, l, n);
+  init_bord(SigmaDelta_step4_SIMD,h,l,n);
+  save_all_image_SIMD(SigmaDelta_step4_SIMD,h,l,n, "./car3_out_step_4_SIMD_binaire/","car_3_out");
+
+
   // vuint8*** Matrice_dilatation = init_tab_SIMD(h,l,n);
   // dilatation_5_SIMD(SigmaDelta_step0_SIMD,Matrice_dilatation, h,l,n);
   // save_all_image_SIMD(Matrice_dilatation,h,l,n, "./car3_out_dilatation_SIMD/","car_3_out");
