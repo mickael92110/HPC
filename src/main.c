@@ -20,6 +20,8 @@
 #include "morpho.h"
 #include "morpho_SIMD.h"
 
+#include "test_mouvement_SIMD.h"
+
 //#include "simd1D.h"
 //#include "simd2D.h"
 
@@ -39,6 +41,11 @@ void info(void)
 
 int main(int argc, char *argv[])
 {
+  test_SD_step_1_SIMD();
+  test_SD_step_2_SIMD();
+  test_SD_step_3_SIMD();
+  test_SD_step_4_SIMD();
+
   long h = 240;
   long l = 320;
   int n = 200;

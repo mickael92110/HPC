@@ -12,7 +12,7 @@
 #include "simd_macro.h"
 
 #include "mouvement_SIMD.h"
-#include "SD_SIMD_macro.h"
+
 
 #define CARD 16
 #define BORD 32
@@ -29,11 +29,6 @@ vuint8*** init_tab_SIMD(int h,int l, int n){
 
   for(int k = 0; k<n ; ++k){
     m[k] = vui8matrix_s (nrl,nrh,ncl,nch);
-      for(int i = 0; i<nrh ; ++i){
-        for(int j = 0; j<(nch/CARD); ++j){
-          m[k][i][j] = init_vuint8(100);
-        }
-      }
     }
 
   return m;
@@ -233,14 +228,14 @@ void SD_step_1_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, int 
 
           // Si a < b
           c =  _mm_cmplt_epi8 (a,b);
-          c = _mm_or_si128(c,n1);
+          c = _mm_xor_si128(c,n1);
           c = _mm_xor_si128(c,n2);
           kt = _mm_and_si128(c,k1);
           d = _mm_add_epi8(d,kt);
 
           //Si a > b
           c = _mm_cmpgt_epi8 (a,b);
-          c = _mm_or_si128(c,n2);
+          c = _mm_xor_si128(c,n2);
           c = _mm_xor_si128(c,n1);
           kt = _mm_and_si128(c,k1);
           d = _mm_sub_epi8(d,kt);
@@ -332,14 +327,14 @@ void SD_step_3_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, int 
 
           // Si a < b
           c =  _mm_cmplt_epi8 (a,b);
-          c = _mm_or_si128(c,n1);
+          c = _mm_xor_si128(c,n1);
           c = _mm_xor_si128(c,n2);
           kt = _mm_and_si128(c,k1);
           d = _mm_add_epi8(d,kt);
 
           //Si a > b
           c = _mm_cmpgt_epi8 (a,b);
-          c = _mm_or_si128(c,n2);
+          c = _mm_xor_si128(c,n2);
           c = _mm_xor_si128(c,n1);
           kt = _mm_and_si128(c,k1);
           d = _mm_sub_epi8(d,kt);
@@ -382,7 +377,7 @@ void SD_step_4_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, vuin
 
           //c à 1 dans les cas ou b > a en signé donc cas problématique en unsigned
           c = _mm_cmplt_epi8 (a,b);
-          c = _mm_or_si128(c,n2);
+          c = _mm_xor_si128(c,n2);
           c = _mm_xor_si128(c,n1);
           d = _mm_and_si128(c,k255);
 
