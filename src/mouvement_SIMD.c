@@ -39,6 +39,73 @@ vuint8*** init_tab_SIMD(int h,int l, int n){
   return m;
 }
 
+
+void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n){
+  vuint8 m1,d;
+  for(int k = 0; k<n ; ++k){
+      for(int i = 0; i<h ; ++i){
+        for(int j = 0; j<(l/CARD); ++j){
+          if(i == 0){
+            SigmaDelta_step4_SIMD[k][i+(BORD/2)-1][j+(BORD/(2*CARD))] = SigmaDelta_step4_SIMD[k][i+BORD/2][j+(BORD/(2*CARD))] ;
+            SigmaDelta_step4_SIMD[k][i+(BORD/2)-2][j+(BORD/(2*CARD))] = SigmaDelta_step4_SIMD[k][i+BORD/2][j+(BORD/(2*CARD))] ;
+          }
+          if(i == h-1){
+            SigmaDelta_step4_SIMD[k][i+(BORD/2)+1][j+(BORD/(2*CARD))] = SigmaDelta_step4_SIMD[k][i+BORD/2][j+(BORD/(2*CARD))] ;
+            SigmaDelta_step4_SIMD[k][i+(BORD/2)+2][j+(BORD/(2*CARD))] = SigmaDelta_step4_SIMD[k][i+BORD/2][j+(BORD/(2*CARD))] ;
+          }
+
+          if(j == 0){
+            m1 = SigmaDelta_step4_SIMD[k][i+(BORD/2)][j+(BORD/(2*CARD))];
+            m1 = _mm_bslli_si128(m1,15);
+            d = _mm_bsrli_si128(m1,1);
+            d = _mm_add_epi8(d,m1);
+            m1 = _mm_bsrli_si128(d,2);
+            d = _mm_add_epi8(d,m1);
+            m1 = _mm_bsrli_si128(d,4);
+            d = _mm_add_epi8(d,m1);
+            m1 = _mm_bsrli_si128(d,8);
+            d = _mm_add_epi8(d,m1);
+            SigmaDelta_step4_SIMD[k][i+(BORD/2)][j+(BORD/(2*CARD))-1] = d;
+            if(i == 0){
+              SigmaDelta_step4_SIMD[k][i+(BORD/2)-1][j+(BORD/(2*CARD))-1]= d;
+              SigmaDelta_step4_SIMD[k][i+(BORD/2)-2][j+(BORD/(2*CARD))-1]= d;
+
+            }
+            if(i == h-1){
+              SigmaDelta_step4_SIMD[k][i+(BORD/2)+1][j+(BORD/(2*CARD))-1]= d;
+              SigmaDelta_step4_SIMD[k][i+(BORD/2)+2][j+(BORD/(2*CARD))-1]= d;
+            }
+          }
+          if(j == (l/CARD)-1){
+            m1 = SigmaDelta_step4_SIMD[k][i+(BORD/2)][j+(BORD/(2*CARD))];
+            m1 = _mm_bsrli_si128(m1,15);
+            d = _mm_bslli_si128(m1,1);
+            d = _mm_add_epi8(d,m1);
+            m1 = _mm_bslli_si128(d,2);
+            d = _mm_add_epi8(d,m1);
+            m1 = _mm_bslli_si128(d,4);
+            d = _mm_add_epi8(d,m1);
+            m1 = _mm_bslli_si128(d,8);
+            d = _mm_add_epi8(d,m1);
+            SigmaDelta_step4_SIMD[k][i+(BORD/2)][j+(BORD/(2*CARD))+1] = d;
+            if(i == 0){
+              SigmaDelta_step4_SIMD[k][i+(BORD/2)-1][j+(BORD/(2*CARD))+1]= d;
+              SigmaDelta_step4_SIMD[k][i+(BORD/2)-2][j+(BORD/(2*CARD))+1]= d;
+
+            }
+            if(i == h-1){
+              SigmaDelta_step4_SIMD[k][i+(BORD/2)+1][j+(BORD/(2*CARD))+1]= d;
+              SigmaDelta_step4_SIMD[k][i+(BORD/2)+2][j+(BORD/(2*CARD))+1]= d;
+            }
+          }
+        }
+      }
+    }
+}
+
+
+
+
 //Cette fonction va remplir le tableau d'images
 // h : hauteur de l'image
 // l : largeur de l'image
@@ -282,12 +349,7 @@ void SD_step_4_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, vuin
           d = _mm_and_si128(c,k255);
 
           SigmaDelta_step4[k][i+BORD/2][j+(BORD/(2*CARD))] = d;
-          // if(k == 1){
-          //   display_vuint8(SigmaDelta_step1[k][i][j], "%4.0u", "1\n");
-          //   display_vuint8(SigmaDelta_step0[k][i][j], "%4.0u", "0\n");
-          //   display_vuint8(SigmaDelta_step2[k][i][j], "%4.0u", "2\n");
-          //   printf("\n");
-          // }
+
         }
       }
     }

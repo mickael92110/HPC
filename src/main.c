@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
 
   vuint8*** SigmaDelta_step4_SIMD = init_tab_SIMD(h,l,n);
   SD_step_4_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,SigmaDelta_step4_SIMD, h,l,n);
+  init_bord(SigmaDelta_step4_SIMD,h,l,n);
   save_all_image_SIMD(SigmaDelta_step4_SIMD,h,l,n, "./car3_out_step_4_SIMD/","car_3_out");
 
   // vuint8*** Matrice_dilatation = init_tab_SIMD(h,l,n);
