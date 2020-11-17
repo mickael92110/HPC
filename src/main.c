@@ -47,11 +47,7 @@ int main(int argc, char *argv[])
   // test_SD_step_3_SIMD();
   // test_SD_step_4_SIMD();
 
-  // chronometrie
-  int iter, niter = 100;
-  int run, nrun = 100;
-  double t0, t1, dt, tmin, t;
-  double cycles;
+
 
   long h = 240;
   long l = 320;
@@ -63,22 +59,37 @@ int main(int argc, char *argv[])
 
   vuint8*** SigmaDelta_step0_SIMD = init_tab_SIMD(h,l,n);
   SD_step_0_SIMD(SigmaDelta_step0_SIMD, h,l, n);
+  CHRONO(SD_step_0_SIMD(SigmaDelta_step0_SIMD, h,l, n),cycles);
+  printf("cycles step 0 : %6.2f\n", cycles);
+  printf("temps step 0 en ms :%6.2f\n", cycles/(2e9) * 1000);
   save_all_image_SIMD(SigmaDelta_step0_SIMD,h,l,n, "./car3_out_step_0_SIMD/","car_3_out");
 
   vuint8*** SigmaDelta_step1_SIMD = init_tab_SIMD(h,l,n);
   SD_step_1_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD, h,l,n);
+  CHRONO(SD_step_1_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD, h,l,n),cycles);
+  printf("cycles step 1 : %6.2f\n", cycles);
+  printf("temps step 1 en ms :%6.2f\n", cycles/(2e9) * 1000);
   save_all_image_SIMD(SigmaDelta_step1_SIMD,h,l,n, "./car3_out_step_1_SIMD/","car_3_out");
 
   vuint8*** SigmaDelta_step2_SIMD = init_tab_SIMD(h,l,n);
   SD_step_2_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD,SigmaDelta_step2_SIMD, h,l,n);
+  CHRONO(SD_step_2_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD,SigmaDelta_step2_SIMD, h,l,n),cycles);
+  printf("cycles step 2 : %6.2f\n", cycles);
+  printf("temps step 2 en ms :%6.2f\n", cycles/(2e9) * 1000);
   save_all_image_SIMD(SigmaDelta_step2_SIMD,h,l,n, "./car3_out_step_2_SIMD/","car_3_out");
 
   vuint8*** SigmaDelta_step3_SIMD = init_tab_SIMD(h,l,n);
   SD_step_3_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,h,l,n,1,254);
+  CHRONO(SD_step_3_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,h,l,n,1,254),cycles);
+  printf("cycles step 3 : %6.2f\n", cycles);
+  printf("temps step 3 en ms :%6.2f\n", cycles/(2e9) * 1000);
   save_all_image_SIMD(SigmaDelta_step3_SIMD,h,l,n, "./car3_out_step_3_SIMD/","car_3_out");
 
   vuint8*** SigmaDelta_step4_SIMD = init_tab_SIMD(h,l,n);
   SD_step_4_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,SigmaDelta_step4_SIMD, h,l,n);
+  CHRONO(SD_step_4_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,SigmaDelta_step4_SIMD, h,l,n),cycles);
+  printf("cycles step 4 : %6.2f\n", cycles);
+  printf("temps step 4 en ms :%6.2f\n", cycles/(2e9) * 1000);
   init_bord(SigmaDelta_step4_SIMD,h,l,n);
   conversion_255_1(SigmaDelta_step4_SIMD, h, l, n);
   conversion_1_255(SigmaDelta_step4_SIMD, h, l, n);
@@ -88,6 +99,8 @@ int main(int argc, char *argv[])
   conversion_255_1(SigmaDelta_step4_SIMD, h, l, n);
   init_bord(SigmaDelta_step4_SIMD,h,l,n);
   save_all_image_SIMD(SigmaDelta_step4_SIMD,h,l,n, "./car3_out_step_4_SIMD_binaire/","car_3_out");
+
+  
 
 
   // vuint8*** Matrice_dilatation = init_tab_SIMD(h,l,n);
