@@ -14,8 +14,7 @@
 #include "mouvement_SIMD.h"
 
 
-#define CARD 16
-#define BORD 32
+
 
 
 vuint8*** init_tab_SIMD(int h,int l, int n){
@@ -211,6 +210,7 @@ void SD_step_1_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, int 
 
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h ; ++i){
+
       for(int j = 0; j<l/CARD; ++j){
         if(k == 0 ){
           SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))] = _mm_add_epi8(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)],k0);
@@ -310,7 +310,7 @@ void SD_step_3_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, int 
     for(int i = 0; i<h ; ++i){
       for(int j = 0; j<l/CARD; ++j){
         if(k == 0 ){
-          SigmaDelta_step3[k][i+BORD/2][j+(BORD/(2*CARD))] = _mm_set1_epi8(vmin);
+          SigmaDelta_step3[k][i+BORD/2][j+(BORD/(2*CARD))] = _mm_set1_epi8(vmin+1);
         }
         else{
 
@@ -319,7 +319,7 @@ void SD_step_3_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, int 
           a = d;
           b = SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))];
           b = _mm_add_epi8(b,b); // N = 2
-          b = _mm_add_epi8(b,b); // N = 4
+          //b = _mm_add_epi8(b,b); // N = 4
 
           // Permet de tester si on a des pixel négatif (>127)
           n1 = _mm_cmplt_epi8 (b,k0);
