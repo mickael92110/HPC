@@ -22,6 +22,7 @@
 
 #include "test_mouvement_SIMD.h"
 
+#include "mymacro.h"
 //#include "simd1D.h"
 //#include "simd2D.h"
 
@@ -41,10 +42,16 @@ void info(void)
 
 int main(int argc, char *argv[])
 {
-  test_SD_step_1_SIMD();
-  test_SD_step_2_SIMD();
-  test_SD_step_3_SIMD();
-  test_SD_step_4_SIMD();
+  // test_SD_step_1_SIMD();
+  // test_SD_step_2_SIMD();
+  // test_SD_step_3_SIMD();
+  // test_SD_step_4_SIMD();
+
+  // chronometrie
+  int iter, niter = 100;
+  int run, nrun = 100;
+  double t0, t1, dt, tmin, t;
+  double cycles;
 
   long h = 240;
   long l = 320;
