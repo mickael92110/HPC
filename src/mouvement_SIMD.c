@@ -14,9 +14,6 @@
 #include "mouvement_SIMD.h"
 
 
-
-
-
 vuint8*** init_tab_SIMD(int h,int l, int n){
   vuint8 ***m;
   int nrl= 0;
@@ -29,6 +26,7 @@ vuint8*** init_tab_SIMD(int h,int l, int n){
   for(int k = 0; k<n ; ++k){
     m[k] = vui8matrix_s (nrl,nrh,ncl,nch);
     }
+
 
   return m;
 }

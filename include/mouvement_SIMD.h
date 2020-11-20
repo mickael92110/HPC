@@ -7,7 +7,7 @@
 
 #include "mouvement.h"
 #define CARD 16
-#define BORD 0
+#define BORD 32
 
 vuint8*** init_tab_SIMD(int h, int l, int n);
 void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n);

@@ -14,7 +14,6 @@
 #include "test_mouvement_SIMD.h"
 
 
-
 void test_algo_SD_step_1_SIMD() {
 
   vuint8 k1 = _mm_set1_epi8 (1);
@@ -329,5 +328,54 @@ void test_fonction_step_3(){
 
   free_SD_SIMD(step2, h, l, n);
   free_SD_SIMD(step3, h, l, n);
+  //faire un free ici
+}
+
+void test_fonction_step_4(){
+  int h = 2;
+  int l = 16;
+  int n = 1;
+  --h;
+  --l;
+  srand((unsigned) time(NULL));
+
+  puts("======================================");
+  puts("=== Init matrices step 2 et step 3 ===");
+  puts("======================================");
+
+  vuint8*** step2 = init_tab_SIMD(h,l,n);
+
+  step2[0][0][0] = init_vuint8_all(10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,0);
+  step2[0][1][0] = init_vuint8_all_rand(255);
+
+
+  display_vui8matrix (step2[0], 0, h, 0, l,"%4.1u", "\nstep 2 : Image0 \n");
+
+
+  vuint8*** step3 = init_tab_SIMD(h,l,n);
+
+  step3[0][0][0] = init_vuint8_all(15,235,130,255,200,10,230,125,1  ,0  ,4,1,200,128,255,0);
+  step3[0][1][0] = init_vuint8_all_rand(255);
+
+
+  display_vui8matrix (step3[0], 0, h, 0, l,"%4.1u", "\nstep 3 : Image0 \n");
+
+
+  vuint8*** step4 = init_tab_SIMD(h,l,n);
+
+
+  SD_step_4_SIMD(step2, step3,step4, h+1, l+1, n);
+
+  puts("========================");
+  puts("=== Resultats step 4 ===");
+  puts("========================");
+
+  display_vui8matrix (step4[0], 0, h, 0, l,"%4.1u", "\nstep 4 : Image0 \n");
+
+
+
+  free_SD_SIMD(step2, h, l, n);
+  free_SD_SIMD(step3, h, l, n);
+  free_SD_SIMD(step4, h, l, n);
   //faire un free ici
 }
