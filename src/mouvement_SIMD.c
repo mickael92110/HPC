@@ -181,22 +181,31 @@ void free_SD_SIMD(vuint8 *** m,int h,int l, int n){
 
 void save_all_image_SIMD(vuint8 *** SigmaDelta_step,int h, int l, int n, char * path, char * filename){
   int nrl=0;
-  int nrh=h+BORD;
+  int nrh=h+BORD-1;
   int ncl=0;
-  int nch=l+BORD;
+  int nch=l+BORD-1;
   int ndigit = 3;
   char *extension = "pgm";
   char *complete_filename = (char*) malloc(128*sizeof(char));
   uint8 ** buffer = ui8matrix(nrl, nrh, ncl, nch);
+  int index2 = 0;
 
-  for(int i = 0; i<n; ++i){
-    generate_path_filename_k_ndigit_extension(path, filename, i,  ndigit,  extension, complete_filename);
-    buffer = ui8matrix_wrap(buffer, nrl, nrh, ncl, nch, SigmaDelta_step[i]);
+  for(int k = 0; k<n; ++k){
+    generate_path_filename_k_ndigit_extension(path, filename, k,  ndigit,  extension, complete_filename);
+    for(int i = 0; i < h+BORD-1 ; ++i){
+      for(int j = 0 ; j < l+BORD-1 ; j += CARD){
+        //printf("i : %d\n", i);
+        _mm_store_si128 ((__m128i *)&buffer[i][j], SigmaDelta_step[k][i][index2]);
+        ++index2;
+        }
+      index2 = 0;
+    }
+    // //res = ui8matrix_wrap(buffer, nrl, nrh, ncl, nch, SigmaDelta_step[i]);
     SavePGM_ui8matrix(buffer, nrl, nrh,  ncl,  nch, complete_filename);
-
   }
+
   free(complete_filename);
-  //free_ui8matrix(buffer,nrl,nrh,ncl,nch);
+  free_ui8matrix(buffer,nrl,nrh,ncl,nch);
 }
 
 

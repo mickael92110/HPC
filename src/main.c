@@ -122,9 +122,9 @@ int main(int argc, char *argv[])
 
   free_SD_SIMD(SigmaDelta_step0_SIMD,h,l,n);
   free_SD_SIMD(SigmaDelta_step1_SIMD,h,l,n);
-  // free_SD_SIMD(SigmaDelta_step2_SIMD,h,l,n);
-  // free_SD_SIMD(SigmaDelta_step3_SIMD,h,l,n);
-  // free_SD_SIMD(SigmaDelta_step4_SIMD,h,l,n);
+  free_SD_SIMD(SigmaDelta_step2_SIMD,h,l,n);
+  free_SD_SIMD(SigmaDelta_step3_SIMD,h,l,n);
+  free_SD_SIMD(SigmaDelta_step4_SIMD,h,l,n);
   // // free_SD_SIMD(Matrice_dilatation,h,l,n);
   // // free_SD_SIMD(Matrice_erosion,h,l,n);
 

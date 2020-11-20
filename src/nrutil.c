@@ -842,8 +842,9 @@ void SavePGM_ui8matrix(uint8 **m, int nrl, int nrh, int ncl, int nch, char *file
 
   sprintf(buffer,"P5\n%d %d\n255\n",ncol, nrow);
   fwrite(buffer,strlen(buffer),1,file);
-  for(i=nrl; i<=nrh; i++)
+  for(i=nrl; i<=nrh; i++){
     WritePGMrow(m[i], ncol, file);
+  }
 
   /* fermeture du fichier */
   fclose(file);
