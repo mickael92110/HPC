@@ -6,6 +6,7 @@
 #ifndef __MOUVEMENT_H__
 #define __MOUVEMENT_H__
 
+#include "mouvement_SIMD.h"
 
 uint8*** init_tab(int h, int l, int n);
 void SD_step_0(uint8*** SigmaDelta_step0, int h, int l, int n);

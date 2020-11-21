@@ -7,10 +7,14 @@
 
 #include "mouvement.h"
 #define CARD 16
+
 #define BORD 32
 
+// Décommenter pour faire les tests unitaires
+//#define BORD 0
+
 vuint8*** init_tab_SIMD(int h, int l, int n);
-void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n);
+void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n,int bord);
 void conversion_255_1(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n);
 void conversion_1_255(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n);
 

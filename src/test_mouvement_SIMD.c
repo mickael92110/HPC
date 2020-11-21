@@ -187,8 +187,6 @@ void test_algo_SD_step_4_SIMD(){
 
 
 
-
-
 vuint8 init_vuint8_all_rand(int x){
 
   return init_vuint8_all(rand()%x,rand()%x,rand()%x,rand()%x,rand()%x,
@@ -196,6 +194,22 @@ vuint8 init_vuint8_all_rand(int x){
   rand()%x,rand()%x,rand()%x);
 }
 
+
+vuint8*** init_tab_SIMD_test(int h,int l, int n){
+  vuint8 ***m;
+  int nrl= 0;
+  int nrh = h;
+  int ncl= 0;
+  int nch = l;
+
+  m = (vuint8 ***) malloc((size_t)(n*sizeof(vuint8 **)));
+
+  for(int k = 0; k<n ; ++k){
+    m[k] = vui8matrix_s (nrl,nrh,ncl,nch);
+    }
+
+  return m;
+}
 
 void test_fonction_step_1(){
   int h = 2;
@@ -227,7 +241,7 @@ void test_fonction_step_1(){
   SD_step_1_SIMD(step0, step1, h+1, l+1, n);
 
   puts("========================");
-  puts("=== Resultats step 2 ===");
+  puts("=== Resultats step 1 ===");
   puts("========================");
 
   display_vui8matrix (step1[0], 0, h, 0, l,"%4.1u", "\nstep 1 : Image0 \n");
@@ -376,6 +390,40 @@ void test_fonction_step_4(){
 
   free_SD_SIMD(step2, h, l, n);
   free_SD_SIMD(step3, h, l, n);
+  free_SD_SIMD(step4, h, l, n);
+  //faire un free ici
+}
+
+
+
+void test_fonction_init_bord(){
+  int h = 2+(32);
+  int l = 16+(32);
+  int n = 1;
+  --h;
+  --l;
+  srand((unsigned) time(NULL));
+
+  puts("======================================");
+  puts("=== Init matrices step 2 et step 3 ===");
+  puts("======================================");
+
+  vuint8*** step4 = init_tab_SIMD(h,l,n);
+
+  step4[0][16][1] = init_vuint8_all(10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,1);
+  step4[0][17][1] = init_vuint8_all_rand(255);
+
+
+  display_vui8matrix (step4[0], 0, h, 0, l,"%4.1u", "\nstep 4 : Image0 \n");
+
+  init_bord(step4,2,16,n,32);
+
+  puts("========================");
+  puts("=== Resultats init_bord ===");
+  puts("========================");
+
+  display_vui8matrix (step4[0], 0, h, 0, l,"%4.1u", "\nstep 4 : Image0 \n");
+
   free_SD_SIMD(step4, h, l, n);
   //faire un free ici
 }
