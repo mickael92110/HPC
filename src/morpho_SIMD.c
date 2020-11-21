@@ -50,6 +50,7 @@ vuint8 filtre_and_3(vuint8 *** SigmaDelta_step, int k,int i, int j) {
   vec_1_2 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))];
   vec_1_3 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))+1];
 
+
   vec_2_1 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))-1];
   vec_2_2 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))];
   vec_2_3 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))+1];
