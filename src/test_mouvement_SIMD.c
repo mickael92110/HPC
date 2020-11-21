@@ -213,7 +213,7 @@ vuint8*** init_tab_SIMD_test(int h,int l, int n){
   return m;
 }
 
-void test_fonction_step_1(){
+void test_fonction_step_1_SIMD(){
   int h = 2;
   int l = 16;
   int n = 2;
@@ -255,7 +255,7 @@ void test_fonction_step_1(){
   //faire un free ici
 }
 
-void test_fonction_step_2(){
+void test_fonction_step_2_SIMD(){
   int h = 2;
   int l = 16;
   int n = 1;
@@ -299,7 +299,7 @@ void test_fonction_step_2(){
   //faire un free ici
 }
 
-void test_fonction_step_3(){
+void test_fonction_step_3_SIMD(){
   int h = 2;
   int l = 16;
   int n = 200;
@@ -347,7 +347,7 @@ void test_fonction_step_3(){
   //faire un free ici
 }
 
-void test_fonction_step_4(){
+void test_fonction_step_4_SIMD(){
   int h = 2;
   int l = 16;
   int n = 1;

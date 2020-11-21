@@ -79,10 +79,15 @@ void save_all_image(uint8 *** SigmaDelta_step,int h, int l, int n, char * path, 
 }
 
 void SD_step_1(uint8*** SigmaDelta_step0, uint8*** SigmaDelta_step1, int h, int l, int n) {
-  for(int k = 1; k<n; ++k){
+
+
+  for(int k = 0; k<n; ++k){
     for(int i = BORD/2; i<h+BORD/2 ; ++i){
       for(int j = BORD/2; j<l+BORD/2 ; ++j){
-        if(SigmaDelta_step1[k-1][i][j] < SigmaDelta_step0[k][i][j]){
+        if(k == 0) {
+          copy_ui8matrix_ui8matrix (SigmaDelta_step0[k], 0, h+BORD, 0, l+BORD, SigmaDelta_step1[k]);
+        }
+        else if(SigmaDelta_step1[k-1][i][j] < SigmaDelta_step0[k][i][j]){
           SigmaDelta_step1[k][i][j] = SigmaDelta_step1[k-1][i][j]+1;
         }
         else if(SigmaDelta_step1[k-1][i][j] > SigmaDelta_step0[k][i][j]){
@@ -97,7 +102,7 @@ void SD_step_1(uint8*** SigmaDelta_step0, uint8*** SigmaDelta_step1, int h, int 
 }
 
 void SD_step_2(uint8*** SigmaDelta_step0, uint8*** SigmaDelta_step1, uint8*** SigmaDelta_step2, int h, int l, int n){
-  for(int k = 1; k<n; ++k){
+  for(int k = 0; k<n; ++k){
     for(int i = BORD/2; i<h+BORD/2 ; ++i){
       for(int j = BORD/2; j<l+BORD/2; ++j){
           SigmaDelta_step2[k][i][j] = abs(SigmaDelta_step1[k][i][j] - SigmaDelta_step0[k][i][j]);
@@ -133,7 +138,7 @@ void SD_step_3(uint8*** SigmaDelta_step2, uint8*** SigmaDelta_step3, int h, int 
 }
 
 void SD_step_4(uint8*** SigmaDelta_step2, uint8*** SigmaDelta_step3,uint8*** SigmaDelta_step4, int h, int l, int n){
-  for(int k = 1; k<n; ++k){
+  for(int k = 0; k<n; ++k){
     for(int i = BORD/2; i<h+BORD/2 ; ++i){
       for(int j = BORD/2; j<l+BORD/2; ++j){
         if(SigmaDelta_step2[k][i][j] < SigmaDelta_step3[k][i][j]){

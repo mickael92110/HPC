@@ -7,6 +7,10 @@
 #define __MOUVEMENT_H__
 
 #include "mouvement_SIMD.h"
+#define BORD 32
+
+// Décommenter pour faire les tests unitaires
+//#define BORD 0
 
 uint8*** init_tab(int h, int l, int n);
 void SD_step_0(uint8*** SigmaDelta_step0, int h, int l, int n);
