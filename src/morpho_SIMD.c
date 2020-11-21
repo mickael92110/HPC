@@ -14,6 +14,8 @@
 #include "mouvement.h"
 #include "mouvement_SIMD.h"
 
+#include "morpho_SIMD.h"
+
 vuint8 filtre_or_3(vuint8 *** SigmaDelta_step, int k,int i, int j) {
 
   vuint8 vec_1_1,vec_1_2,vec_1_3,vec_2_1,vec_2_2,vec_2_3,vec_3_1,vec_3_2,vec_3_3;

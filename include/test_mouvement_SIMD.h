@@ -20,5 +20,10 @@ void test_fonction_step_2();
 void test_fonction_step_3();
 void test_fonction_step_4();
 void test_fonction_init_bord();
+void test_fonction_propag_bord_gauche();
+void test_fonction_propag_bord_droite();
+void test_conversion_255_1();
+void test_conversion_1_255();
+
 
 #endif // __TEST_MOUVEMENT_SIMD_H__

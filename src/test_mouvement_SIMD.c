@@ -13,6 +13,8 @@
 #include "mouvement_SIMD.h"
 #include "test_mouvement_SIMD.h"
 
+ #define setr_epi8(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15) \
+        _mm_setr_epi8 ((char)x0,(char)x1,(char)x2,(char)x3,(char)x4,(char)x5,(char)x6,(char)x7,(char)x8,(char)x9,(char)x10,(char)x11,(char)x12,(char)x13,(char)x14,(char)x15)
 
 void test_algo_SD_step_1_SIMD() {
 
@@ -27,9 +29,9 @@ void test_algo_SD_step_1_SIMD() {
 
 
   //initialisation Mt-1(x) It(x)
-  d = _mm_setr_epi8 (134,255,30,127,129,0  ,1,222,0  ,127,0,4,1,200,128,255);
+  d = setr_epi8 (134,255,30,127,129,0  ,1,222,0  ,127,0,4,1,200,128,255);
   a = d;
-  b = _mm_setr_epi8 (128,254,10,1  ,128,127,2,223,255,127,0,4,1,199,127,1  );
+  b = setr_epi8 (128,254,10,1  ,128,127,2,223,255,127,0,4,1,199,127,1  );
 
   // Permet de tester si on a des pixel négatif (>127)
   n1 = _mm_cmplt_epi8 (b,k0);
@@ -70,8 +72,8 @@ void test_algo_SD_step_2_SIMD() {
 
 
   //SigmaDelta_step2[k][i][j] = abs(SigmaDelta_step1[k][i][j] - SigmaDelta_step0[k][i][j]);
-  a = _mm_setr_epi8 (15,235,130,255,200,10,230,125,1  ,0  ,4,1,200,128,255,0);
-  b = _mm_setr_epi8 (10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,0);
+  a = setr_epi8 (15,235,130,255,200,10,230,125,1  ,0  ,4,1,200,128,255,0);
+  b = setr_epi8 (10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,0);
 
   //n1 à 1 si les valeurs de b > 127
   //n2 à 1 si les valeurs de a > 127
@@ -117,9 +119,9 @@ void test_algo_SD_step_3_SIMD(){
   puts("===================");
 
   //initialisation Vt-1(x) Ot(x)
-  d = _mm_setr_epi8 (1,235,130,255,200,10,230,125,1  ,0  ,4,1,200,128,255,0);
+  d = setr_epi8 (1,235,130,255,200,10,230,125,1  ,0  ,4,1,200,128,255,0);
   a = d;
-  b = _mm_setr_epi8 (10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,0);
+  b = setr_epi8 (10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,0);
 
   b = _mm_add_epi8(b,b); // N = 2
   b = _mm_add_epi8(b,b); // N = 4
@@ -166,8 +168,8 @@ void test_algo_SD_step_4_SIMD(){
   puts("=== test step 4 ===");
   puts("===================");
 
-  a = _mm_setr_epi8 (15,235,130,255,200,10,230,125,1  ,0  ,4,1,200,128,255,0);
-  b = _mm_setr_epi8 (10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,0);
+  a = setr_epi8 (15,235,130,255,200,10,230,125,1  ,0  ,4,1,200,128,255,0);
+  b = setr_epi8 (10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,0);
 
   //n1 à 1 si les valeurs de b > 127
   //n2 à 1 si les valeurs de a > 127
@@ -226,10 +228,10 @@ void test_fonction_step_1(){
   vuint8*** step0 = init_tab_SIMD(h,l,n);
 
   step0[0][0][0] = init_vuint8_all(134,255,30,127,129,0  ,1,222,0  ,127,0,4,1,200,128,255);
-  step0[0][1][0] = init_vuint8_all_rand(255);
+  step0[0][1][0] = init_vuint8_all_rand(256);
 
   step0[1][0][0] = init_vuint8_all(128,254,10,1  ,128,127,2,223,255,127,0,4,1,199,127,1  );
-  step0[1][1][0] = init_vuint8_all_rand(255);
+  step0[1][1][0] = init_vuint8_all_rand(256);
 
 
   display_vui8matrix (step0[0], 0, h, 0, l,"%4.1u", "\nstep 0 : Image0 \n");
@@ -268,7 +270,7 @@ void test_fonction_step_2(){
   vuint8*** step0 = init_tab_SIMD(h,l,n);
 
   step0[0][0][0] = init_vuint8_all(10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,0);
-  step0[0][1][0] = init_vuint8_all_rand(255);
+  step0[0][1][0] = init_vuint8_all_rand(256);
 
 
   display_vui8matrix (step0[0], 0, h, 0, l,"%4.1u", "\nstep 0 : Image0 \n");
@@ -276,7 +278,7 @@ void test_fonction_step_2(){
   vuint8*** step1 = init_tab_SIMD(h,l,n);
 
   step1[0][0][0] = init_vuint8_all(15,235,130,255,200,10,230,125,1  ,0  ,4,1,200,128,255,0);
-  step1[0][1][0] = init_vuint8_all_rand(255);
+  step1[0][1][0] = init_vuint8_all_rand(256);
 
 
   display_vui8matrix (step1[0], 0, h, 0, l,"%4.1u", "\nstep 1 : Image0 \n");
@@ -360,7 +362,7 @@ void test_fonction_step_4(){
   vuint8*** step2 = init_tab_SIMD(h,l,n);
 
   step2[0][0][0] = init_vuint8_all(10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,0);
-  step2[0][1][0] = init_vuint8_all_rand(255);
+  step2[0][1][0] = init_vuint8_all_rand(256);
 
 
   display_vui8matrix (step2[0], 0, h, 0, l,"%4.1u", "\nstep 2 : Image0 \n");
@@ -369,7 +371,7 @@ void test_fonction_step_4(){
   vuint8*** step3 = init_tab_SIMD(h,l,n);
 
   step3[0][0][0] = init_vuint8_all(15,235,130,255,200,10,230,125,1  ,0  ,4,1,200,128,255,0);
-  step3[0][1][0] = init_vuint8_all_rand(255);
+  step3[0][1][0] = init_vuint8_all_rand(256);
 
 
   display_vui8matrix (step3[0], 0, h, 0, l,"%4.1u", "\nstep 3 : Image0 \n");
@@ -395,7 +397,6 @@ void test_fonction_step_4(){
 }
 
 
-
 void test_fonction_init_bord(){
   int h = 2+(32);
   int l = 16+(32);
@@ -411,7 +412,7 @@ void test_fonction_init_bord(){
   vuint8*** step4 = init_tab_SIMD(h,l,n);
 
   step4[0][16][1] = init_vuint8_all(10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,1);
-  step4[0][17][1] = init_vuint8_all_rand(255);
+  step4[0][17][1] = init_vuint8_all_rand(256);
 
 
   display_vui8matrix (step4[0], 0, h, 0, l,"%4.1u", "\nstep 4 : Image0 \n");
@@ -423,6 +424,105 @@ void test_fonction_init_bord(){
   puts("========================");
 
   display_vui8matrix (step4[0], 0, h, 0, l,"%4.1u", "\nstep 4 : Image0 \n");
+
+  free_SD_SIMD(step4, h, l, n);
+  //faire un free ici
+}
+
+void test_fonction_propag_bord_gauche(){
+  vuint8 m1, d;
+
+
+  puts("==========================");
+  puts("=== test propag gauche ===");
+  puts("==========================");
+
+
+  m1 = setr_epi8 (134,255,30,127,129,0  ,1,222,0  ,127,0,4,1,200,128,255);
+
+  d = propag_bord_gauche(m1);
+
+  display_vuint8(m1, "%4.1u", "m1    ="); puts("");
+  display_vuint8(d , "%4.1u", "d     ="); puts("");
+
+}
+
+void test_fonction_propag_bord_droite(){
+  vuint8 m1, d;
+
+
+  puts("==========================");
+  puts("=== test propag droite ===");
+  puts("==========================");
+
+
+  m1 = setr_epi8 (134,255,30,127,129,0  ,1,222,0  ,127,0,4,1,200,128,255);
+
+  d = propag_bord_droite(m1);
+
+  display_vuint8(m1, "%4.1u", "m1    ="); puts("");
+  display_vuint8(d , "%4.1u", "d     ="); puts("");
+
+}
+
+
+void test_conversion_255_1(){
+  int h = 2;
+  int l = 16;
+  int n = 1;
+  --h;
+  --l;
+  srand((unsigned) time(NULL));
+
+  puts("============================");
+  puts("=== Init matrices step 4 ===");
+  puts("============================");
+
+  vuint8*** step4 = init_tab_SIMD(h,l,n);
+
+  step4[0][0][0] = init_vuint8_all(255,0,255,0,255,255,0,255,255,0,255,255,0,0,255,255);
+  step4[0][1][0] = init_vuint8_all(0,255,0,0,255,0,0,255,0,255,0,255,0,0,255,0);
+
+  display_vui8matrix (step4[0], 0, h, 0, l,"%4.1u", "\nImage 255 et 0 \n");
+
+  conversion_255_1(step4, h+1,l+1, n);
+
+  puts("==================================");
+  puts("=== Resultats conversion_255_1 ===");
+  puts("==================================");
+
+  display_vui8matrix (step4[0], 0, h, 0, l,"%4.1u", "\nImage 0 et 255 \n");
+
+  free_SD_SIMD(step4, h, l, n);
+  //faire un free ici
+}
+
+void test_conversion_1_255(){
+  int h = 2;
+  int l = 16;
+  int n = 1;
+  --h;
+  --l;
+  srand((unsigned) time(NULL));
+
+  puts("==================================");
+  puts("=== Resultats conversion_1_255 ===");
+  puts("==================================");
+
+  vuint8*** step4 = init_tab_SIMD(h,l,n);
+
+  step4[0][0][0] = init_vuint8_all(1,0,1,0,1,1,0,1,1,0,1,1,0,0,1,1);
+  step4[0][1][0] = init_vuint8_all(0,1,0,0,1,0,0,1,0,1,0,1,0,0,1,0);
+
+  display_vui8matrix (step4[0], 0, h, 0, l,"%4.1u", "\nImage 0 et 1 \n");
+
+  conversion_1_255(step4, h+1,l+1, n);
+
+  puts("========================");
+  puts("=== Resultats step 4 ===");
+  puts("========================");
+
+  display_vui8matrix (step4[0], 0, h, 0, l,"%4.1u", "\nImage 255 et 0 \n");
 
   free_SD_SIMD(step4, h, l, n);
   //faire un free ici

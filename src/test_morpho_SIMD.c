@@ -15,6 +15,7 @@
 #include "simd_macro.h"
 #include "morpho_SIMD.h"
 #include "morpho_SIMD_macro.h"
+#include "morpho.h"
 
 
 
@@ -125,5 +126,5 @@ void test_erosion5_SIMD(){
   //TEST EROSION 3 SIMD
   matrice_test_erosion5[0][2][1] = filtre_and_5(matrice_test, 0,2,1);
   display_vuint8 (matrice_test_erosion5[0][2][1],"%d", "\nmatrice test erosion\n");
-
+  printf("\n");
 }

@@ -15,6 +15,8 @@
 
 vuint8*** init_tab_SIMD(int h, int l, int n);
 void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n,int bord);
+vuint8 propag_bord_gauche(vuint8 m);
+vuint8 propag_bord_droite(vuint8 m);
 void conversion_255_1(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n);
 void conversion_1_255(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n);
 

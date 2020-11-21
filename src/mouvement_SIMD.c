@@ -31,8 +31,40 @@ vuint8*** init_tab_SIMD(int h,int l, int n){
 }
 
 
+vuint8 propag_bord_gauche(vuint8 m){
+    vuint8 d,m1;
+    m1 = m;
+    m1 = _mm_bslli_si128(m1,15);
+    d = _mm_bsrli_si128(m1,1);
+    d = _mm_add_epi8(d,m1);
+    m1 = _mm_bsrli_si128(d,2);
+    d = _mm_add_epi8(d,m1);
+    m1 = _mm_bsrli_si128(d,4);
+    d = _mm_add_epi8(d,m1);
+    m1 = _mm_bsrli_si128(d,8);
+    d = _mm_add_epi8(d,m1);
+
+    return d;
+}
+
+
+vuint8 propag_bord_droite(vuint8 m){
+    vuint8 d,m1;
+    m1 = m;
+    m1 = _mm_bsrli_si128(m1,15);
+    d = _mm_bslli_si128(m1,1);
+    d = _mm_add_epi8(d,m1);
+    m1 = _mm_bslli_si128(d,2);
+    d = _mm_add_epi8(d,m1);
+    m1 = _mm_bslli_si128(d,4);
+    d = _mm_add_epi8(d,m1);
+    m1 = _mm_bslli_si128(d,8);
+    d = _mm_add_epi8(d,m1);
+    return d;
+}
+
 void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n, int bord){
-  vuint8 m1,d;
+  vuint8 m1,d,d1,d2,d3,d4,d5;
   for(int k = 0; k<n ; ++k){
       for(int i = 0; i<h ; ++i){
         for(int j = 0; j<(l/CARD); ++j){
@@ -49,18 +81,10 @@ void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n, int bord){
           if(j == 0){
             m1 = SigmaDelta_step4_SIMD[k][i+(bord/2)][j+(bord/(2*CARD))];
 
-
-            m1 = _mm_bslli_si128(m1,15);
-            d = _mm_bsrli_si128(m1,1);
-            d = _mm_add_epi8(d,m1);
-            m1 = _mm_bsrli_si128(d,2);
-            d = _mm_add_epi8(d,m1);
-            m1 = _mm_bsrli_si128(d,4);
-            d = _mm_add_epi8(d,m1);
-            m1 = _mm_bsrli_si128(d,8);
-            d = _mm_add_epi8(d,m1);
+            d = propag_bord_gauche(m1);
 
             SigmaDelta_step4_SIMD[k][i+(bord/2)][j+(bord/(2*CARD))-1] = d;
+
             if(i == 0){
               SigmaDelta_step4_SIMD[k][i+(bord/2)-1][j+(bord/(2*CARD))-1]= d;
               SigmaDelta_step4_SIMD[k][i+(bord/2)-2][j+(bord/(2*CARD))-1]= d;
@@ -73,16 +97,11 @@ void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n, int bord){
           }
           if(j == (l/CARD)-1){
             m1 = SigmaDelta_step4_SIMD[k][i+(bord/2)][j+(bord/(2*CARD))];
-            m1 = _mm_bsrli_si128(m1,15);
-            d = _mm_bslli_si128(m1,1);
-            d = _mm_add_epi8(d,m1);
-            m1 = _mm_bslli_si128(d,2);
-            d = _mm_add_epi8(d,m1);
-            m1 = _mm_bslli_si128(d,4);
-            d = _mm_add_epi8(d,m1);
-            m1 = _mm_bslli_si128(d,8);
-            d = _mm_add_epi8(d,m1);
+
+            d = propag_bord_droite(m1);
+
             SigmaDelta_step4_SIMD[k][i+(bord/2)][j+(bord/(2*CARD))+1] = d;
+
             if(i == 0){
               SigmaDelta_step4_SIMD[k][i+(bord/2)-1][j+(bord/(2*CARD))+1]= d;
               SigmaDelta_step4_SIMD[k][i+(bord/2)-2][j+(bord/(2*CARD))+1]= d;
@@ -99,13 +118,13 @@ void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n, int bord){
 }
 
 void conversion_255_1(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n){
+
   vuint8 d,k1,vmax,m1;
-  k1 = _mm_set1_epi8 (1);
-  vmax = _mm_set1_epi8 (255);
+  k1 = _mm_set1_epi8 ((char)1);
+  vmax = _mm_set1_epi8 ((char)255);
   for(int k = 0; k<n ; ++k){
       for(int i = 0; i<h ; ++i){
         for(int j = 0; j<(l/CARD); ++j){
-
           m1 = SigmaDelta_step4_SIMD[k][i+(BORD/2)][j+(BORD/(2*CARD))];
           d = _mm_cmpeq_epi8(m1,vmax);
           d = _mm_and_si128(d,k1);
@@ -119,8 +138,8 @@ void conversion_255_1(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n){
 
 void conversion_1_255(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n){
   vuint8 d,k1,vmax,m1;
-  k1 = _mm_set1_epi8 (1);
-  vmax = _mm_set1_epi8 (255);
+  k1 = _mm_set1_epi8 ((char)1);
+  vmax = _mm_set1_epi8 ((char)255);
   for(int k = 0; k<n ; ++k){
       for(int i = 0; i<h ; ++i){
         for(int j = 0; j<(l/CARD); ++j){
@@ -214,8 +233,8 @@ void save_all_image_SIMD(vuint8 *** SigmaDelta_step,int h, int l, int n, char * 
 
 void SD_step_1_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, int h, int l, int n) {
 
-  vuint8 k1 = _mm_set1_epi8 (1);
-  vuint8 k0 = _mm_set1_epi8 (0);
+  vuint8 k1 = _mm_set1_epi8 ((char)1);
+  vuint8 k0 = _mm_set1_epi8 ((char)0);
   vuint8 a,b,c,n1,n2,d,kt;
 
   for(int k = 0; k<n; ++k){
@@ -259,8 +278,8 @@ void SD_step_1_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, int 
 }
 
 void SD_step_2_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, vuint8*** SigmaDelta_step2, int h, int l, int n){
-  vuint8 k1 = _mm_set1_epi8 (1);
-  vuint8 k0 = _mm_set1_epi8 (0);
+  vuint8 k1 = _mm_set1_epi8 ((char)1);
+  vuint8 k0 = _mm_set1_epi8 ((char)0);
   vuint8 a,b,c,n1,n2,d,dn,kn;
 
   for(int k = 0; k<n; ++k){
@@ -312,8 +331,8 @@ void SD_step_3_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, int 
   vmin = vmin-1;
   vmax = vmax+1;
 
-  vuint8 k1 = _mm_set1_epi8 (1);
-  vuint8 k0 = _mm_set1_epi8 (0);
+  vuint8 k1 = _mm_set1_epi8 ((char)1);
+  vuint8 k0 = _mm_set1_epi8 ((char)0);
   vuint8 a,b,c,n1,n2,d,kt;
 
   for(int k = 0; k<n; ++k){
@@ -368,9 +387,9 @@ void SD_step_3_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, int 
 }
 
 void SD_step_4_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, vuint8*** SigmaDelta_step4, int h, int l, int n){
-  vuint8 k1 = _mm_set1_epi8 (1);
-  vuint8 k0 = _mm_set1_epi8 (0);
-  vuint8 k255 = _mm_set1_epi8 (255);
+  vuint8 k1 = _mm_set1_epi8 ((char)1);
+  vuint8 k0 = _mm_set1_epi8 ((char)0);
+  vuint8 k255 = _mm_set1_epi8 ((char)255);
   vuint8 a,b,c,n1,n2,d,dn,kn;
 
   for(int k = 0; k<n; ++k){
