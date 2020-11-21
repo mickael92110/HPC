@@ -9,11 +9,11 @@
 #include "mouvement.h"
 
 
-uint8 max_3(uint8 *** SigmaDelta_step, int i, int j, int n);
-uint8 min_3(uint8 *** SigmaDelta_step, int i, int j, int n);
+uint8 or_3(uint8 *** SigmaDelta_step, int i, int j, int n);
+uint8 and_3(uint8 *** SigmaDelta_step, int i, int j, int n);
 
-uint8 max_5(uint8 *** SigmaDelta_step, int i, int j, int n);
-uint8 min_5(uint8 *** SigmaDelta_step, int i, int j, int n);
+uint8 or_5(uint8 *** SigmaDelta_step, int i, int j, int n);
+uint8 and_5(uint8 *** SigmaDelta_step, int i, int j, int n);
 
 void dilatation_3(uint8 *** SigmaDelta_step, uint8 *** Matrice_dilatation, int h, int l, int n);
 void erosion_3(uint8 *** SigmaDelta_step, uint8 *** Matrice_erosion, int h, int l, int n);

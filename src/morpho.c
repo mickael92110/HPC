@@ -12,7 +12,7 @@
 
 #include "morpho.h"
 
-uint8 max_3(uint8 *** SigmaDelta_step, int i, int j, int n) {
+uint8 or_3(uint8 *** SigmaDelta_step, int i, int j, int n) {
   uint8 max = 255;
   for (int a = -1 ; a < 2; a++){
     for(int b = -1; b < 2 ; b++ ){
@@ -23,7 +23,7 @@ uint8 max_3(uint8 *** SigmaDelta_step, int i, int j, int n) {
   }
   return 0;
 }
-uint8 min_3(uint8 *** SigmaDelta_step, int i, int j, int n) {
+uint8 and_3(uint8 *** SigmaDelta_step, int i, int j, int n) {
   uint8 max = 255;
   for (int a = -1 ; a < 2; a++){
     for(int b = -1; b < 2 ; b++ ){
@@ -35,7 +35,7 @@ uint8 min_3(uint8 *** SigmaDelta_step, int i, int j, int n) {
   return 255;
 }
 
-uint8 max_5(uint8 *** SigmaDelta_step, int i, int j, int n) {
+uint8 or_5(uint8 *** SigmaDelta_step, int i, int j, int n) {
   uint8 max = 255;
   for (int a = -2 ; a < 3; a++){
     for(int b = -2; b < 3 ; b++ ){
@@ -46,7 +46,7 @@ uint8 max_5(uint8 *** SigmaDelta_step, int i, int j, int n) {
   }
   return 0;
 }
-uint8 min_5(uint8 *** SigmaDelta_step, int i, int j, int n) {
+uint8 and_5(uint8 *** SigmaDelta_step, int i, int j, int n) {
   uint8 max = 255;
   for (int a = -2 ; a < 3; a++){
     for(int b = -2; b < 3 ; b++ ){
@@ -62,7 +62,7 @@ void dilatation_3(uint8 *** SigmaDelta_step, uint8 *** Matrice_dilatation, int h
   for(int k = 0; k<n; k++){
     for(int i = 0; i<h; i++){
       for(int j = 0; j<l; j++){
-        Matrice_dilatation[k][i+BORD/2][j+BORD/2] = max_3(SigmaDelta_step, i, j, k);
+        Matrice_dilatation[k][i+BORD/2][j+BORD/2] = or_3(SigmaDelta_step, i, j, k);
       }
     }
   }
@@ -71,7 +71,7 @@ void erosion_3(uint8 *** SigmaDelta_step, uint8 *** Matrice_erosion, int h, int 
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h ; ++i){
       for(int j = 0; j<l; ++j){
-        Matrice_erosion[k][i+BORD/2][j+BORD/2] = min_3(SigmaDelta_step, i, j, k);
+        Matrice_erosion[k][i+BORD/2][j+BORD/2] = and_3(SigmaDelta_step, i, j, k);
       }
     }
   }
@@ -81,7 +81,7 @@ void dilatation_5(uint8 *** SigmaDelta_step, uint8 *** Matrice_dilatation, int h
   for(int k = 0; k<n; k++){
     for(int i = 0; i<h; i++){
       for(int j = 0; j<l; j++){
-        Matrice_dilatation[k][i+BORD/2][j+BORD/2] = max_5(SigmaDelta_step, i, j, k);
+        Matrice_dilatation[k][i+BORD/2][j+BORD/2] = or_5(SigmaDelta_step, i, j, k);
       }
     }
   }
@@ -90,7 +90,7 @@ void erosion_5(uint8 *** SigmaDelta_step, uint8 *** Matrice_erosion, int h, int 
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h ; ++i){
       for(int j = 0; j<l; ++j){
-        Matrice_erosion[k][i+BORD/2][j+BORD/2] = min_5(SigmaDelta_step, i, j, k);
+        Matrice_erosion[k][i+BORD/2][j+BORD/2] = and_5(SigmaDelta_step, i, j, k);
       }
     }
   }

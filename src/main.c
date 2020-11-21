@@ -22,6 +22,7 @@
 
 #include "test_mouvement_SIMD.h"
 #include "test_morpho_SIMD.h"
+#include "test_morpho.h"
 
 #include "mymacro.h"
 //#include "simd1D.h"
