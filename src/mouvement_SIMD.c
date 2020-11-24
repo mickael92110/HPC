@@ -236,95 +236,282 @@ void save_all_image_SIMD(vuint8 *** SigmaDelta_step,int h, int l, int n, char * 
 
 
 void SD_step_1_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, int h, int l, int n) {
-
+  int r = (l/CARD)%5;
   vuint8 k1 = _mm_set1_epi8 ((char)1);
   vuint8 k0 = _mm_set1_epi8 ((char)0);
   vuint8 a,b,c,n1,n2,d,kt,t;
 
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h ; ++i){
-
-      for(int j = 0; j<l/CARD; ++j){
+      for(int j = 0; j<l/CARD-r; j+=5){
         if(k == 0 ){
           t = ld(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)]);
           st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))],_mm_add_epi8(t,k0));
+          t = ld(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)+1]);
+          st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+1],_mm_add_epi8(t,k0));
+          t = ld(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)+2]);
+          st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+2],_mm_add_epi8(t,k0));
+          t = ld(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)+3]);
+          st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+3],_mm_add_epi8(t,k0));
+          t = ld(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)+4]);
+          st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+4],_mm_add_epi8(t,k0));
         }
         else{
 
           //initialisation Mt-1(x) It(x)
-          d = ld(SigmaDelta_step1[k-1][i+BORD/2][j+(BORD/(2*CARD))]);
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][j+(BORD/(2*CARD))+0]);
           a = d;
-          b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))]);
+          b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))+0]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+0],d);
 
-          // Permet de tester si on a des pixel négatif (>127)
-          n1 = _mm_cmplt_epi8 (b,k0);
-          n2 = _mm_cmplt_epi8 (a,k0);
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][j+(BORD/(2*CARD))+1]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))+1]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+1],d);
 
-          // Si a < b
-          c =  _mm_cmplt_epi8 (a,b);
-          c = _mm_xor_si128(c,n1);
-          c = _mm_xor_si128(c,n2);
-          kt = _mm_and_si128(c,k1);
-          d = _mm_add_epi8(d,kt);
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][j+(BORD/(2*CARD))+2]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))+2]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+2],d);
 
-          //Si a > b
-          c = _mm_cmpgt_epi8 (a,b);
-          c = _mm_xor_si128(c,n2);
-          c = _mm_xor_si128(c,n1);
-          kt = _mm_and_si128(c,k1);
-          d = _mm_sub_epi8(d,kt);
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][j+(BORD/(2*CARD))+3]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))+3]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+3],d);
 
-          st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))],d);
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][j+(BORD/(2*CARD))+4]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))+4]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+4],d);
 
         }
+      }
+      switch(r){
+        case 4 :
+        if(k == 0 ){
+          t = ld(SigmaDelta_step0[k][i+BORD/2][((BORD/2)/CARD)+l/CARD-r+0]);
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0],_mm_add_epi8(t,k0));
+          t = ld(SigmaDelta_step0[k][i+BORD/2][((BORD/2)/CARD)+l/CARD-r+1]);
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1],_mm_add_epi8(t,k0));
+          t = ld(SigmaDelta_step0[k][i+BORD/2][((BORD/2)/CARD)+l/CARD-r+2]);
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+2],_mm_add_epi8(t,k0));
+          t = ld(SigmaDelta_step0[k][i+BORD/2][((BORD/2)/CARD)+l/CARD-r+3]);
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+3],_mm_add_epi8(t,k0));
+        }
+        else{
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0],d);
+
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1],d);
+
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+3]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+3]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+3],d);
+        }
+        break;
+
+        case 3 :
+        if(k == 0 ){
+          t = ld(SigmaDelta_step0[k][i+BORD/2][((BORD/2)/CARD)+l/CARD-r+0]);
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0],_mm_add_epi8(t,k0));
+          t = ld(SigmaDelta_step0[k][i+BORD/2][((BORD/2)/CARD)+l/CARD-r+1]);
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1],_mm_add_epi8(t,k0));
+          t = ld(SigmaDelta_step0[k][i+BORD/2][((BORD/2)/CARD)+l/CARD-r+2]);
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+2],_mm_add_epi8(t,k0));
+        }
+        else{
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0],d);
+
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1],d);
+
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+2]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+2]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+2],d);
+        }
+          break;
+
+        case 2 :
+        if(k == 0 ){
+          t = ld(SigmaDelta_step0[k][i+BORD/2][((BORD/2)/CARD)+l/CARD-r+0]);
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0],_mm_add_epi8(t,k0));
+          t = ld(SigmaDelta_step0[k][i+BORD/2][((BORD/2)/CARD)+l/CARD-r+1]);
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1],_mm_add_epi8(t,k0));
+        }
+        else{
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0],d);
+
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1],d);
+        }
+        break;
+
+        case 1 :
+        if(k == 0 ){
+          t = ld(SigmaDelta_step0[k][i+BORD/2][((BORD/2)/CARD)+l/CARD-r+0]);
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0],_mm_add_epi8(t,k0));
+        }
+        else{
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+          traitement_step1;
+          st(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0],d);
+        }
+
+          break;
+        default:
+          break;
       }
     }
   }
 }
 
+
+
 void SD_step_2_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, vuint8*** SigmaDelta_step2, int h, int l, int n){
+  //int r = (l/CARD)%5;
   vuint8 k1 = _mm_set1_epi8 ((char)1);
   vuint8 k0 = _mm_set1_epi8 ((char)0);
   vuint8 a,b,c,n1,n2,d,dn,kn;
 
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h ; ++i){
+      //for(int j = 0; j<l/CARD-r; j+=5){
       for(int j = 0; j<l/CARD; ++j){
           //SigmaDelta_step2[k][i][j] = abs(SigmaDelta_step1[k][i][j] - SigmaDelta_step0[k][i][j]);
-          a = ld(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))]);
-          b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))]);
+          a = ld(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+0]);
+          b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))+0]);
+          traitement_step2;
+          st(SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))+0],d);
 
-          //n1 à 1 si les valeurs de b > 127
-          //n2 à 1 si les valeurs de a > 127
-          n1 = _mm_cmplt_epi8 (b,k0);
-          n2 = _mm_cmplt_epi8 (a,k0);
-
-          //c à 1 dans les cas ou b > a en signé donc cas problématique en unsigned
-          c = _mm_cmplt_epi8 (a,b);
-          c = _mm_xor_si128(c,n2);
-          c = _mm_xor_si128(c,n1);
-
-          //Soustraction en signé
-          d = _mm_sub_epi8(a,b);
-
-          //On met dans kn les cas sans problèmes en unsigned
-          kn = _mm_andnot_si128(c,d);
-
-          //On met dans dn les cas avec problèmes en unsigned
-          dn = _mm_and_si128(d,c);
-          //On fait 255-dn+1 pour résoudre le problème des unsigned
-          dn = _mm_sub_epi8(c,dn);
-          n1 = _mm_and_si128(c,k1);
-          dn = _mm_add_epi8(dn,n1);
-
-          //Enfin on regroupe le tableau des sans problèmes et des problèmes résolu
-          d = _mm_add_epi8(dn,kn);
-
-          st(SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))],d);
+          // a = ld(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+1]);
+          // b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))+1]);
+          // traitement_step2;
+          // st(SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))+1],d);
+          //
+          // a = ld(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+2]);
+          // b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))+2]);
+          // traitement_step2;
+          // st(SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))+2],d);
+          //
+          // a = ld(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+3]);
+          // b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))+3]);
+          // traitement_step2;
+          // st(SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))+3],d);
+          //
+          // a = ld(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))+4]);
+          // b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))+4]);
+          // traitement_step2;
+          // st(SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))+4],d);
         }
+
+        // switch(r){
+        //   case 4 :
+        //   a = ld(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+        //   b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+        //   traitement_step2;
+        //   st(SigmaDelta_step2[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0],d);
+        //
+        //   a = ld(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1]);
+        //   b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1]);
+        //   traitement_step2;
+        //   st(SigmaDelta_step2[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1],d);
+        //
+        //   a = ld(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+2]);
+        //   b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+2]);
+        //   traitement_step2;
+        //   st(SigmaDelta_step2[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+2],d);
+        //
+        //   a = ld(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+3]);
+        //   b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+3]);
+        //   traitement_step2;
+        //   st(SigmaDelta_step2[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+3],d);
+        //   break;
+        //
+        //   case 3 :
+        //   a = ld(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+        //   b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+        //   traitement_step2;
+        //   st(SigmaDelta_step2[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0],d);
+        //
+        //   a = ld(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1]);
+        //   b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1]);
+        //   traitement_step2;
+        //   st(SigmaDelta_step2[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1],d);
+        //
+        //   a = ld(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+2]);
+        //   b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+2]);
+        //   traitement_step2;
+        //   st(SigmaDelta_step2[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+2],d);
+        //   break;
+        //   case 2 :
+        //   a = ld(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+        //   b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+        //   traitement_step2;
+        //   st(SigmaDelta_step2[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0],d);
+        //
+        //   a = ld(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1]);
+        //   b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1]);
+        //   traitement_step2;
+        //   st(SigmaDelta_step2[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+1],d);
+        //   break;
+        //   case 1 :
+        //   a = ld(SigmaDelta_step1[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+        //   b = ld(SigmaDelta_step0[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0]);
+        //   traitement_step2;
+        //   st(SigmaDelta_step2[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+0],d);
+        //   break;
+        //   default :
+        //   break;
+        // }
       }
     }
 }
+
 
 void SD_step_3_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, int h, int l, int n, uint8 vmin, uint8 vmax){
   vmin = vmin-1;

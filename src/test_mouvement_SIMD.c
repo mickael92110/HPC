@@ -215,7 +215,7 @@ vuint8*** init_tab_SIMD_test(int h,int l, int n){
 
 void test_fonction_step_1_SIMD(){
   int h = 2;
-  int l = 16;
+  int l = 32;
   int n = 2;
   --h;
   --l;
@@ -228,10 +228,18 @@ void test_fonction_step_1_SIMD(){
   vuint8*** step0 = init_tab_SIMD(h,l,n);
 
   step0[0][0][0] = init_vuint8_all(134,255,30,127,129,0  ,1,222,0  ,127,0,4,1,200,128,255);
+  step0[0][0][1] = init_vuint8_all_rand(256);
+
   step0[0][1][0] = init_vuint8_all_rand(256);
+  step0[0][1][1] = init_vuint8_all_rand(256);
+
 
   step0[1][0][0] = init_vuint8_all(128,254,10,1  ,128,127,2,223,255,127,0,4,1,199,127,1  );
+  step0[1][0][1] = init_vuint8_all_rand(256);
+
   step0[1][1][0] = init_vuint8_all_rand(256);
+  step0[1][1][1] = init_vuint8_all_rand(256);
+
 
 
   display_vui8matrix (step0[0], 0, h, 0, l,"%4.1u", "\nstep 0 : Image0 \n");

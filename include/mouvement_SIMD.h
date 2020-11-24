@@ -11,6 +11,33 @@
 #define st(a,b) _mm_store_si128((__m128i *)&a,b)
 #define ld(a) _mm_load_si128((__m128i*)&a)
 
+#define traitement_step1                    \
+              n1 = _mm_cmplt_epi8 (b,k0);   \
+              n2 = _mm_cmplt_epi8 (a,k0);   \
+              c =  _mm_cmplt_epi8 (a,b);    \
+              c = _mm_xor_si128(c,n1);      \
+              c = _mm_xor_si128(c,n2);      \
+              kt = _mm_and_si128(c,k1);     \
+              d = _mm_add_epi8(d,kt);       \
+              c = _mm_cmpgt_epi8 (a,b);     \
+              c = _mm_xor_si128(c,n2);      \
+              c = _mm_xor_si128(c,n1);      \
+              kt = _mm_and_si128(c,k1);     \
+              d = _mm_sub_epi8(d,kt)
+
+#define traitement_step2                    \
+              n1 = _mm_cmplt_epi8 (b,k0);   \
+              n2 = _mm_cmplt_epi8 (a,k0);   \
+              c = _mm_cmplt_epi8 (a,b);     \
+              c = _mm_xor_si128(c,n2);      \
+              c = _mm_xor_si128(c,n1);      \
+              d = _mm_sub_epi8(a,b);        \
+              kn = _mm_andnot_si128(c,d);   \
+              dn = _mm_and_si128(d,c);      \
+              dn = _mm_sub_epi8(c,dn);      \
+              n1 = _mm_and_si128(c,k1);     \
+              dn = _mm_add_epi8(dn,n1);     \
+              d = _mm_add_epi8(dn,kn)      
 
 vuint8*** init_tab_SIMD(int h, int l, int n);
 void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n,int bord);
