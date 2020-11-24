@@ -8,6 +8,8 @@
 #include "mouvement.h"
 #define CARD 16
 
+#define st(a,b) _mm_store_si128((__m128i *)&a,b)
+#define ld(a) _mm_load_si128((__m128i*)&a)
 
 
 vuint8*** init_tab_SIMD(int h, int l, int n);
