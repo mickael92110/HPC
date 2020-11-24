@@ -21,17 +21,17 @@ vuint8 filtre_or_3(vuint8 *** SigmaDelta_step, int k,int i, int j) {
   vuint8 vec_1_1,vec_1_2,vec_1_3,vec_2_1,vec_2_2,vec_2_3,vec_3_1,vec_3_2,vec_3_3;
   vuint8 or1, or2, or3, or4, or5;
 
-  vec_1_1 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))-1];
-  vec_1_2 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))];
-  vec_1_3 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))+1];
+  vec_1_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))-1]);
+  vec_1_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))]);
+  vec_1_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))+1]);
 
-  vec_2_1 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))-1];
-  vec_2_2 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))];
-  vec_2_3 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))+1];
+  vec_2_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))-1]);
+  vec_2_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))]);
+  vec_2_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))+1]);
 
-  vec_3_1 = SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))-1];
-  vec_3_2 = SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))];
-  vec_3_3 = SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))+1];
+  vec_3_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))-1]);
+  vec_3_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))]);
+  vec_3_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))+1]);
 
 
   or1 = vec_or3(_mm_bsrli_si128(vec_3_1,15),_mm_bsrli_si128(vec_2_1,15), _mm_bsrli_si128(vec_1_1,15));
@@ -48,18 +48,18 @@ vuint8 filtre_and_3(vuint8 *** SigmaDelta_step, int k,int i, int j) {
   vuint8 vec_1_1,vec_1_2,vec_1_3,vec_2_1,vec_2_2,vec_2_3,vec_3_1,vec_3_2,vec_3_3;
   vuint8 and1, and2, and3, reg4,reg5,reg6,reg7,reg8,reg9;
 
-  vec_1_1 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))-1];
-  vec_1_2 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))];
-  vec_1_3 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))+1];
+  vec_1_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))-1]);
+  vec_1_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))]);
+  vec_1_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))+1]);
 
 
-  vec_2_1 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))-1];
-  vec_2_2 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))];
-  vec_2_3 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))+1];
+  vec_2_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))-1]);
+  vec_2_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))]);
+  vec_2_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))+1]);
 
-  vec_3_1 = SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))-1];
-  vec_3_2 = SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))];
-  vec_3_3 = SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))+1];
+  vec_3_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))-1]);
+  vec_3_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))]);
+  vec_3_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))+1]);
 
   reg4 = _mm_add_epi8(_mm_bslli_si128(vec_3_3,15), _mm_bsrli_si128(vec_3_2,1));
   reg5 = _mm_add_epi8(_mm_bslli_si128(vec_2_3,15), _mm_bsrli_si128(vec_2_2,1));
@@ -82,7 +82,7 @@ void dilatation_3_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_dilatation
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h; ++i){
       for(int j = 0; j<l/CARD; ++j){
-        Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))] = filtre_or_3(SigmaDelta_step, k,i,j);
+         _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))],filtre_or_3(SigmaDelta_step, k,i,j)) ;
 
       }
     }
@@ -93,7 +93,7 @@ void erosion_3_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, int 
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h; ++i){
       for(int j = 0; j<l/CARD; ++j){
-        Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))] = filtre_and_3(SigmaDelta_step,k,i,j);
+         _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))],filtre_and_3(SigmaDelta_step,k,i,j));
       }
     }
   }
@@ -117,25 +117,25 @@ vuint8 filtre_or_5(vuint8 *** SigmaDelta_step, int k,int i, int j) {
 
   vuint8 or1, or2, or3, or4, or5,or6;
 
-  vec_1_1 = SigmaDelta_step[k][i+(BORD/2)-2][j+(BORD/(2*CARD))-1];
-  vec_1_2 = SigmaDelta_step[k][i+(BORD/2)-2][j+(BORD/(2*CARD))];
-  vec_1_3 = SigmaDelta_step[k][i+(BORD/2)-2][j+(BORD/(2*CARD))+1];
+  vec_1_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-2][j+(BORD/(2*CARD))-1]);
+  vec_1_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-2][j+(BORD/(2*CARD))]);
+  vec_1_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-2][j+(BORD/(2*CARD))+1]);
 
-  vec_2_1 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))-1];
-  vec_2_2 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))];
-  vec_2_3 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))+1];
+  vec_2_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))-1]);
+  vec_2_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))]);
+  vec_2_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))+1]);
 
-  vec_3_1 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))-1];
-  vec_3_2 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))];
-  vec_3_3 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))+1];
+  vec_3_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))-1]);
+  vec_3_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))]);
+  vec_3_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))+1]);
 
-  vec_4_1 = SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))-1];
-  vec_4_2 = SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))];
-  vec_4_3 = SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))+1];
+  vec_4_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))-1]);
+  vec_4_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))]);
+  vec_4_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))+1]);
 
-  vec_5_1 = SigmaDelta_step[k][i+(BORD/2)+2][j+(BORD/(2*CARD))-1];
-  vec_5_2 = SigmaDelta_step[k][i+(BORD/2)+2][j+(BORD/(2*CARD))];
-  vec_5_3 = SigmaDelta_step[k][i+(BORD/2)+2][j+(BORD/(2*CARD))+1];
+  vec_5_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+2][j+(BORD/(2*CARD))-1]);
+  vec_5_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+2][j+(BORD/(2*CARD))]);
+  vec_5_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+2][j+(BORD/(2*CARD))+1]);
 
 
   or1 = vec_or5(_mm_bsrli_si128(vec_1_1,14),_mm_bsrli_si128(vec_2_1,14), _mm_bsrli_si128(vec_3_1,14), _mm_bsrli_si128(vec_4_1,14), _mm_bsrli_si128(vec_5_1,14));
@@ -144,13 +144,6 @@ vuint8 filtre_or_5(vuint8 *** SigmaDelta_step, int k,int i, int j) {
   or4 = vec_or5(_mm_bsrli_si128(vec_5_2,1),_mm_bslli_si128(vec_1_3,15),_mm_bslli_si128(vec_5_3,15),_mm_bslli_si128(vec_1_2,1),_mm_bslli_si128(vec_5_2,1));
   or5 = vec_or5(_mm_bslli_si128(vec_1_3,14),_mm_bslli_si128(vec_2_3,14), _mm_bslli_si128(vec_3_3,14), _mm_bslli_si128(vec_4_3,14), _mm_bslli_si128(vec_5_3,14));
   or6 = vec_or5(_mm_bslli_si128(vec_1_2,2),_mm_bslli_si128(vec_2_2,1), _mm_bslli_si128(vec_3_2,1), _mm_bslli_si128(vec_4_2,1), _mm_bslli_si128(vec_5_2,1));
-
-  // display_vuint8 (_mm_bsrli_si128(vec_5_1,14),"%d", "\n vec_5_1 \n");
-  // display_vuint8 (_mm_bsrli_si128(vec_4_1,14),"%d", "\n vec_4_1 \n");
-  // display_vuint8 (_mm_bsrli_si128(vec_3_1,14),"%d", "\n vec_3_1 \n");
-  // display_vuint8 (_mm_bsrli_si128(vec_2_1,14),"%d", "\n vec_2_1 \n");
-  // display_vuint8 (_mm_bsrli_si128(vec_1_1,14),"%d", "\n vec_1_1 \n");
-  // display_vuint8 (or1,"%d", "\n or1 i= 1 \n");
 
   return _mm_or_si128(or6,vec_or5(or1,or2,or3,or4,or5));
 }
@@ -164,25 +157,25 @@ vuint8 filtre_and_5(vuint8 *** SigmaDelta_step, int k,int i, int j) {
 
   vuint8 and1, and2, and3, and4, and5,and6;
 
-  vec_1_1 = SigmaDelta_step[k][i+(BORD/2)-2][j+(BORD/(2*CARD))-1];
-  vec_1_2 = SigmaDelta_step[k][i+(BORD/2)-2][j+(BORD/(2*CARD))];
-  vec_1_3 = SigmaDelta_step[k][i+(BORD/2)-2][j+(BORD/(2*CARD))+1];
+  vec_1_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-2][j+(BORD/(2*CARD))-1]);
+  vec_1_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-2][j+(BORD/(2*CARD))]);
+  vec_1_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-2][j+(BORD/(2*CARD))+1]);
 
-  vec_2_1 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))-1];
-  vec_2_2 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))];
-  vec_2_3 = SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))+1];
+  vec_2_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))-1]);
+  vec_2_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))]);
+  vec_2_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)-1][j+(BORD/(2*CARD))+1]);
 
-  vec_3_1 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))-1];
-  vec_3_2 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))];
-  vec_3_3 = SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))+1];
+  vec_3_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))-1]);
+  vec_3_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))]);
+  vec_3_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)][j+(BORD/(2*CARD))+1]);
 
-  vec_4_1 = SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))-1];
-  vec_4_2 = SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))];
-  vec_4_3 = SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))+1];
+  vec_4_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))-1]);
+  vec_4_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))]);
+  vec_4_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+1][j+(BORD/(2*CARD))+1]);
 
-  vec_5_1 = SigmaDelta_step[k][i+(BORD/2)+2][j+(BORD/(2*CARD))-1];
-  vec_5_2 = SigmaDelta_step[k][i+(BORD/2)+2][j+(BORD/(2*CARD))];
-  vec_5_3 = SigmaDelta_step[k][i+(BORD/2)+2][j+(BORD/(2*CARD))+1];
+  vec_5_1 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+2][j+(BORD/(2*CARD))-1]);
+  vec_5_2 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+2][j+(BORD/(2*CARD))]);
+  vec_5_3 = _mm_load_si128 (&SigmaDelta_step[k][i+(BORD/2)+2][j+(BORD/(2*CARD))+1]);
 
   reg1 = _mm_add_epi8(_mm_bsrli_si128(vec_1_1,14), _mm_bslli_si128(vec_1_2,2));
   reg2 = _mm_add_epi8(_mm_bsrli_si128(vec_2_1,14), _mm_bslli_si128(vec_2_2,2));
@@ -207,17 +200,6 @@ vuint8 filtre_and_5(vuint8 *** SigmaDelta_step, int k,int i, int j) {
   and2 = vec_and5(reg6,reg7,reg8,reg9,reg10);
   and3 = vec_and5(vec_1_2,vec_5_2,reg11,reg12,reg13);
 
-  // display_vuint8 (vec_1_2,"%d", "\n vec_1_2 \n");
-  // display_vuint8 (vec_5_2,"%d", "\n vec_5_2 \n");
-  // display_vuint8 (_mm_bsrli_si128(vec_1_1,15),"%d", "\n vec_1_1  \n");
-  // display_vuint8 (_mm_bsrli_si128(vec_5_1,15),"%d", "\n vec_5_1 \n");
-  // display_vuint8 (_mm_bslli_si128(vec_1_3,15),"%d", "\n vec_1_3 \n");
-  //
-  //
-  // display_vuint8 (and3,"%d", "\n and3 \n");
-  // display_vuint8 (_mm_bsrli_si128(vec_2_1,14),"%d", "\n vec_2_1 \n");
-  // display_vuint8 (_mm_bsrli_si128(vec_1_1,14),"%d", "\n vec_1_1 \n");
-  // display_vuint8 (and1,"%d", "\n and1 i= 1 \n");
 
   return _mm_and_si128(reg14,vec_and3(and1,and2,and3));
 }
@@ -227,8 +209,7 @@ void dilatation_5_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_dilatation
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h; ++i){
       for(int j = 0; j<l/CARD; ++j){
-        Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))] = _mm_or_si128 (filtre_or_3(SigmaDelta_step,k,i,j),filtre_or_5(SigmaDelta_step,k,i,j));
-        //Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))] = filtre_or_5(SigmaDelta_step,k,i,j);
+        _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))],_mm_or_si128 (filtre_or_3(SigmaDelta_step,k,i,j),filtre_or_5(SigmaDelta_step,k,i,j)));
 
       }
     }
@@ -240,7 +221,7 @@ void erosion_5_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, int 
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h; ++i){
       for(int j = 0; j<l/CARD; ++j){
-        Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))] = _mm_and_si128 (filtre_and_3(SigmaDelta_step,k,i,j),filtre_and_5(SigmaDelta_step,k,i,j));
+        _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))],_mm_and_si128 (filtre_and_3(SigmaDelta_step,k,i,j),filtre_and_5(SigmaDelta_step,k,i,j)));
       }
     }
   }
