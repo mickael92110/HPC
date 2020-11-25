@@ -128,11 +128,13 @@ void erosion_3_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, int 
 
 void ouverture_3_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, vuint8 *** Matrice_dilatation, int h, int l, int n) {
   erosion_3_SIMD(SigmaDelta_step, Matrice_erosion,h,l,n);
+  init_bord(Matrice_erosion,h,l,n,BORD);
   dilatation_3_SIMD(Matrice_erosion,Matrice_dilatation,h,l,n);
 }
 
 void fermeture_3_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, vuint8 *** Matrice_dilatation, int h, int l, int n) {
   dilatation_3_SIMD(SigmaDelta_step,Matrice_dilatation,h,l,n);
+  init_bord(Matrice_dilatation,h,l,n,BORD);
   erosion_3_SIMD(Matrice_dilatation, Matrice_erosion,h,l,n);
 }
 
@@ -285,10 +287,12 @@ void erosion_5_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, int 
 
 void ouverture_5_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, vuint8 *** Matrice_dilatation, int h, int l, int n) {
   erosion_5_SIMD(SigmaDelta_step, Matrice_erosion,h,l,n);
+  init_bord(Matrice_erosion,h,l,n,BORD);
   dilatation_5_SIMD(Matrice_erosion,Matrice_dilatation,h,l,n);
 }
 
 void fermeture_5_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, vuint8 *** Matrice_dilatation, int h, int l, int n) {
   dilatation_5_SIMD(SigmaDelta_step,Matrice_dilatation,h,l,n);
+  init_bord(Matrice_dilatation,h,l,n,BORD);
   erosion_5_SIMD(Matrice_dilatation, Matrice_erosion,h,l,n);
 }
