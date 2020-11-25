@@ -40,9 +40,10 @@ vuint8 filtre_or_3(vuint8 *** SigmaDelta_step, int k,int i, int j) {
   or4 = vec_or3(_mm_bslli_si128(vec_3_3,15),_mm_bslli_si128(vec_2_3,15), _mm_bslli_si128(vec_1_3,15));
   or5 = vec_or3(_mm_bslli_si128(vec_1_2,1),_mm_bslli_si128(vec_2_2,1), _mm_bslli_si128(vec_3_2,1));
 
+
+
   return vec_or5(or1,or2,or3,or4,or5);
 }
-
 
 vuint8 filtre_and_3(vuint8 *** SigmaDelta_step, int k,int i, int j) {
   vuint8 vec_1_1,vec_1_2,vec_1_3,vec_2_1,vec_2_2,vec_2_3,vec_3_1,vec_3_2,vec_3_3;
@@ -78,35 +79,65 @@ vuint8 filtre_and_3(vuint8 *** SigmaDelta_step, int k,int i, int j) {
   return vec_and3(and1,and2,and3);
 }
 
+
 void dilatation_3_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_dilatation, int h, int l, int n) {
+  int r = (l/CARD) % 5;
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h; ++i){
-      for(int j = 0; j<l/CARD; ++j){
+      for(int j = 0; j<(l/CARD)-r; j+=5){
          _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))],filtre_or_3(SigmaDelta_step, k,i,j)) ;
-
+         _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))+1],filtre_or_3(SigmaDelta_step, k,i,j+1)) ;
+         _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))+2],filtre_or_3(SigmaDelta_step, k,i,j+2)) ;
+         _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))+3],filtre_or_3(SigmaDelta_step, k,i,j+3)) ;
+         _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))+4],filtre_or_3(SigmaDelta_step, k,i,j+4)) ;
+      }
+      switch(r) {
+        case 4 : _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][(l/CARD) +(BORD/(2*CARD))-4],filtre_or_3(SigmaDelta_step, k,i,(l/CARD) -4)) ;
+        case 3 : _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][(l/CARD) +(BORD/(2*CARD))-3],filtre_or_3(SigmaDelta_step, k,i,(l/CARD) -3)) ;
+        case 2 : _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][(l/CARD) +(BORD/(2*CARD))-2],filtre_or_3(SigmaDelta_step, k,i,(l/CARD) -2)) ;
+        case 1 : _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][(l/CARD) +(BORD/(2*CARD))-1],filtre_or_3(SigmaDelta_step, k,i,(l/CARD) -1)) ;
+        default : break;
       }
     }
   }
 }
+
 void erosion_3_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, int h, int l, int n) {
 
+  int r = (l/CARD) % 5;
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h; ++i){
-      for(int j = 0; j<l/CARD; ++j){
-         _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))],filtre_and_3(SigmaDelta_step,k,i,j));
+      for(int j = 0; j<(l/CARD)-r; j+=5){
+         _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))],filtre_and_3(SigmaDelta_step, k,i,j)) ;
+         _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))+1],filtre_and_3(SigmaDelta_step, k,i,j+1)) ;
+         _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))+2],filtre_and_3(SigmaDelta_step, k,i,j+2)) ;
+         _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))+3],filtre_and_3(SigmaDelta_step, k,i,j+3)) ;
+         _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))+4],filtre_and_3(SigmaDelta_step, k,i,j+4)) ;
+      }
+      switch(r) {
+        case 4 : _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][(l/CARD) +(BORD/(2*CARD))-4],filtre_and_3(SigmaDelta_step, k,i,(l/CARD) -4)) ;
+        case 3 : _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][(l/CARD) +(BORD/(2*CARD))-3],filtre_and_3(SigmaDelta_step, k,i,(l/CARD) -3)) ;
+        case 2 : _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][(l/CARD) +(BORD/(2*CARD))-2],filtre_and_3(SigmaDelta_step, k,i,(l/CARD) -2)) ;
+        case 1 : _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][(l/CARD) +(BORD/(2*CARD))-1],filtre_and_3(SigmaDelta_step, k,i,(l/CARD) -1)) ;
+        default : break;
       }
     }
   }
 }
+
 
 void ouverture_3_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, vuint8 *** Matrice_dilatation, int h, int l, int n) {
   erosion_3_SIMD(SigmaDelta_step, Matrice_erosion,h,l,n);
   dilatation_3_SIMD(Matrice_erosion,Matrice_dilatation,h,l,n);
 }
+
 void fermeture_3_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, vuint8 *** Matrice_dilatation, int h, int l, int n) {
   dilatation_3_SIMD(SigmaDelta_step,Matrice_dilatation,h,l,n);
   erosion_3_SIMD(Matrice_dilatation, Matrice_erosion,h,l,n);
 }
+
+
+
 
 vuint8 filtre_or_5(vuint8 *** SigmaDelta_step, int k,int i, int j) {
   vuint8 vec_1_1,vec_1_2,vec_1_3;
@@ -147,6 +178,7 @@ vuint8 filtre_or_5(vuint8 *** SigmaDelta_step, int k,int i, int j) {
 
   return _mm_or_si128(or6,vec_or5(or1,or2,or3,or4,or5));
 }
+
 vuint8 filtre_and_5(vuint8 *** SigmaDelta_step, int k,int i, int j) {
   vuint8 vec_1_1,vec_1_2,vec_1_3;
   vuint8 vec_2_1,vec_2_2,vec_2_3;
@@ -206,31 +238,56 @@ vuint8 filtre_and_5(vuint8 *** SigmaDelta_step, int k,int i, int j) {
 
 
 void dilatation_5_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_dilatation, int h, int l, int n) {
+  int r = (l/CARD) % 5;
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h; ++i){
-      for(int j = 0; j<l/CARD; ++j){
+      for(int j = 0; j<(l/CARD)-r; j+=5){
         _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))],_mm_or_si128 (filtre_or_3(SigmaDelta_step,k,i,j),filtre_or_5(SigmaDelta_step,k,i,j)));
+        _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))+1],_mm_or_si128 (filtre_or_3(SigmaDelta_step,k,i,j+1),filtre_or_5(SigmaDelta_step,k,i,j+1)));
+        _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))+2],_mm_or_si128 (filtre_or_3(SigmaDelta_step,k,i,j+2),filtre_or_5(SigmaDelta_step,k,i,j+2)));
+        _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))+3],_mm_or_si128 (filtre_or_3(SigmaDelta_step,k,i,j+3),filtre_or_5(SigmaDelta_step,k,i,j+3)));
+        _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][j+(BORD/(2*CARD))+4],_mm_or_si128 (filtre_or_3(SigmaDelta_step,k,i,j+4),filtre_or_5(SigmaDelta_step,k,i,j+4)));
 
+      }
+      switch(r) {
+        case 4 : _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][(l/CARD)+ (BORD/(2*CARD))-4],_mm_or_si128 (filtre_or_3(SigmaDelta_step,k,i,(l/CARD)-4),filtre_or_5(SigmaDelta_step,k,i,(l/CARD)-4)));
+        case 3 : _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][(l/CARD)+ (BORD/(2*CARD))-3],_mm_or_si128 (filtre_or_3(SigmaDelta_step,k,i,(l/CARD)-3),filtre_or_5(SigmaDelta_step,k,i,(l/CARD)-3)));
+        case 2 : _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][(l/CARD)+ (BORD/(2*CARD))-2],_mm_or_si128 (filtre_or_3(SigmaDelta_step,k,i,(l/CARD)-2),filtre_or_5(SigmaDelta_step,k,i,(l/CARD)-2)));
+        case 1 : _mm_store_si128 (&Matrice_dilatation[k][i+BORD/2][(l/CARD)+ (BORD/(2*CARD))-1],_mm_or_si128 (filtre_or_3(SigmaDelta_step,k,i,(l/CARD)-1),filtre_or_5(SigmaDelta_step,k,i,(l/CARD)-1)));
+        default : break;
       }
     }
   }
 }
 
 void erosion_5_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, int h, int l, int n) {
-
+  int r = (l/CARD) % 5;
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h; ++i){
-      for(int j = 0; j<l/CARD; ++j){
+      for(int j = 0; j<(l/CARD)-r; j+=5){
         _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))],_mm_and_si128 (filtre_and_3(SigmaDelta_step,k,i,j),filtre_and_5(SigmaDelta_step,k,i,j)));
+        _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))+1],_mm_and_si128 (filtre_and_3(SigmaDelta_step,k,i,j+1),filtre_and_5(SigmaDelta_step,k,i,j+1)));
+        _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))+2],_mm_and_si128 (filtre_and_3(SigmaDelta_step,k,i,j+2),filtre_and_5(SigmaDelta_step,k,i,j+2)));
+        _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))+3],_mm_and_si128 (filtre_and_3(SigmaDelta_step,k,i,j+3),filtre_and_5(SigmaDelta_step,k,i,j+3)));
+        _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][j+(BORD/(2*CARD))+4],_mm_and_si128 (filtre_and_3(SigmaDelta_step,k,i,j+4),filtre_and_5(SigmaDelta_step,k,i,j+4)));
+      }
+      switch(r) {
+        case 4 : _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][(l/CARD)+ (BORD/(2*CARD))-4],_mm_and_si128 (filtre_and_3(SigmaDelta_step,k,i,(l/CARD)-4),filtre_and_5(SigmaDelta_step,k,i,(l/CARD)-4)));
+        case 3 : _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][(l/CARD)+ (BORD/(2*CARD))-3],_mm_and_si128 (filtre_and_3(SigmaDelta_step,k,i,(l/CARD)-3),filtre_and_5(SigmaDelta_step,k,i,(l/CARD)-3)));
+        case 2 : _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][(l/CARD)+ (BORD/(2*CARD))-2],_mm_and_si128 (filtre_and_3(SigmaDelta_step,k,i,(l/CARD)-2),filtre_and_5(SigmaDelta_step,k,i,(l/CARD)-2)));
+        case 1 : _mm_store_si128 (&Matrice_erosion[k][i+BORD/2][(l/CARD)+ (BORD/(2*CARD))-1],_mm_and_si128 (filtre_and_3(SigmaDelta_step,k,i,(l/CARD)-1),filtre_and_5(SigmaDelta_step,k,i,(l/CARD)-1)));
+        default : break;
       }
     }
   }
 }
 
+
 void ouverture_5_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, vuint8 *** Matrice_dilatation, int h, int l, int n) {
   erosion_5_SIMD(SigmaDelta_step, Matrice_erosion,h,l,n);
   dilatation_5_SIMD(Matrice_erosion,Matrice_dilatation,h,l,n);
 }
+
 void fermeture_5_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, vuint8 *** Matrice_dilatation, int h, int l, int n) {
   dilatation_5_SIMD(SigmaDelta_step,Matrice_dilatation,h,l,n);
   erosion_5_SIMD(Matrice_dilatation, Matrice_erosion,h,l,n);
