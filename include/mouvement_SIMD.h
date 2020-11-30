@@ -136,6 +136,7 @@ st(SigmaDelta_step3[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+v],_mm_set1_epi8(vmin+
               traitement_step4; \
               st(SigmaDelta_step4[k][i+BORD/2][(BORD/(2*CARD))+l/CARD-r+v],d); \
 
+
 vuint8*** init_tab_SIMD(int h, int l, int n);
 void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n,int bord);
 vuint8 propag_bord_gauche(vuint8 m);

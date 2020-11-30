@@ -97,7 +97,9 @@ void init_bord(vuint8*** SigmaDelta_step4_SIMD, int h,int l, int n, int bord){
           }
           if(j == (l/CARD)-1){
             m1 = ld(SigmaDelta_step4_SIMD[k][i+(bord/2)][j+(bord/(2*CARD))]);
+
             d = propag_bord_droite(m1);
+
             st(SigmaDelta_step4_SIMD[k][i+(bord/2)][j+(bord/(2*CARD))+1],d);
 
             if(i == 0){
@@ -234,223 +236,155 @@ void save_all_image_SIMD(vuint8 *** SigmaDelta_step,int h, int l, int n, char * 
 
 
 void SD_step_1_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, int h, int l, int n) {
-  int r = (l/CARD)%5;
+
   vuint8 k1 = _mm_set1_epi8 ((char)1);
   vuint8 k0 = _mm_set1_epi8 ((char)0);
   vuint8 a,b,c,n1,n2,d,kt,t;
 
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h ; ++i){
-      for(int j = 0; j<l/CARD-r; j+=5){
+      for(int j = 0; j<l/CARD; ++j){
         if(k == 0 ){
-          init_step1(0);
-          init_step1(1);
-          init_step1(2);
-          init_step1(3);
-          init_step1(4);
+          t = ld(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)]);
+          st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))],_mm_add_epi8(t,k0));
         }
         else{
-          ld_st_step1(0);
-          ld_st_step1(1);
-          ld_st_step1(2);
-          ld_st_step1(3);
-          ld_st_step1(4);
+
+          //initialisation Mt-1(x) It(x)
+          d = ld(SigmaDelta_step1[k-1][i+BORD/2][j+(BORD/(2*CARD))]);
+          a = d;
+          b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))]);
+
+          // Permet de tester si on a des pixel négatif (>127)
+          n1 = _mm_cmplt_epi8 (b,k0);
+          n2 = _mm_cmplt_epi8 (a,k0);
+
+          // Si a < b
+          c =  _mm_cmplt_epi8 (a,b);
+          c = _mm_xor_si128(c,n1);
+          c = _mm_xor_si128(c,n2);
+          kt = _mm_and_si128(c,k1);
+          d = _mm_add_epi8(d,kt);
+
+          //Si a > b
+          c = _mm_cmpgt_epi8 (a,b);
+          c = _mm_xor_si128(c,n2);
+          c = _mm_xor_si128(c,n1);
+          kt = _mm_and_si128(c,k1);
+          d = _mm_sub_epi8(d,kt);
+
+          st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))],d);
+
         }
-      }
-      switch(r){
-        case 4 :
-                if(k == 0 ){
-                  init_step1_switch(0);
-                  init_step1_switch(1);
-                  init_step1_switch(2);
-                  init_step1_switch(3);
-                }
-                else{
-                  ld_st_step1_switch(0);
-                  ld_st_step1_switch(1);
-                  ld_st_step1_switch(2);
-                  ld_st_step1_switch(3);
-                }
-        break;
-
-        case 3 :
-                if(k == 0 ){
-                  init_step1_switch(0);
-                  init_step1_switch(1);
-                  init_step1_switch(2);
-                }
-                else{
-                  ld_st_step1_switch(0);
-                  ld_st_step1_switch(1);
-                  ld_st_step1_switch(2);
-                }
-          break;
-
-        case 2 :
-                if(k == 0 ){
-                  init_step1_switch(0);
-                  init_step1_switch(1);
-                }
-                else{
-                  ld_st_step1_switch(0);
-                  ld_st_step1_switch(1);
-                }
-        break;
-
-        case 1 :
-                if(k == 0 ){
-                  init_step1_switch(0);
-                }
-                else{
-                  ld_st_step1_switch(0);
-                }
-        break;
-
-        default:
-        break;
       }
     }
   }
 }
 
-
-
 void SD_step_2_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, vuint8*** SigmaDelta_step2, int h, int l, int n){
-  int r = (l/CARD)%5;
   vuint8 k1 = _mm_set1_epi8 ((char)1);
   vuint8 k0 = _mm_set1_epi8 ((char)0);
   vuint8 a,b,c,n1,n2,d,dn,kn;
 
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h ; ++i){
-      for(int j = 0; j<l/CARD-r; j+=5){
-          ld_st_step2(0);
-          ld_st_step2(1);
-          ld_st_step2(2);
-          ld_st_step2(3);
-          ld_st_step2(4);
-        }
+      for(int j = 0; j<l/CARD; ++j){
+          //SigmaDelta_step2[k][i][j] = abs(SigmaDelta_step1[k][i][j] - SigmaDelta_step0[k][i][j]);
+          a = ld(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))]);
+          b = ld(SigmaDelta_step0[k][i+BORD/2][j+(BORD/(2*CARD))]);
 
-        switch(r){
-          case 4 :
-                  ld_st_step2_switch(0);
-                  ld_st_step2_switch(1);
-                  ld_st_step2_switch(2);
-                  ld_st_step2_switch(3);
-          break;
+          //n1 à 1 si les valeurs de b > 127
+          //n2 à 1 si les valeurs de a > 127
+          n1 = _mm_cmplt_epi8 (b,k0);
+          n2 = _mm_cmplt_epi8 (a,k0);
 
-          case 3 :
-                  ld_st_step2_switch(0);
-                  ld_st_step2_switch(1);
-                  ld_st_step2_switch(2);
-          break;
-          case 2 :
-                  ld_st_step2_switch(0);
-                  ld_st_step2_switch(1);
-          break;
-          case 1 :
-                  ld_st_step2_switch(0);
-          break;
-          default :
-          break;
+          //c à 1 dans les cas ou b > a en signé donc cas problématique en unsigned
+          c = _mm_cmplt_epi8 (a,b);
+          c = _mm_xor_si128(c,n2);
+          c = _mm_xor_si128(c,n1);
+
+          //Soustraction en signé
+          d = _mm_sub_epi8(a,b);
+
+          //On met dans kn les cas sans problèmes en unsigned
+          kn = _mm_andnot_si128(c,d);
+
+          //On met dans dn les cas avec problèmes en unsigned
+          dn = _mm_and_si128(d,c);
+          //On fait 255-dn+1 pour résoudre le problème des unsigned
+          dn = _mm_sub_epi8(c,dn);
+          n1 = _mm_and_si128(c,k1);
+          dn = _mm_add_epi8(dn,n1);
+
+          //Enfin on regroupe le tableau des sans problèmes et des problèmes résolu
+          d = _mm_add_epi8(dn,kn);
+
+          st(SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))],d);
         }
       }
     }
 }
 
-
 void SD_step_3_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, int h, int l, int n, uint8 vmin, uint8 vmax){
   vmin = vmin-1;
   vmax = vmax+1;
-  int r = (l/CARD)%5;
+
   vuint8 k1 = _mm_set1_epi8 ((char)1);
   vuint8 k0 = _mm_set1_epi8 ((char)0);
-  vuint8 vmin_v = _mm_set1_epi8 ((char)(vmin));
-  vuint8 vmax_v = _mm_set1_epi8 ((char)(vmax));
   vuint8 a,b,c,n1,n2,d,kt;
 
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h ; ++i){
-      for(int j = 0; j<l/CARD-r; j+=5){
+      for(int j = 0; j<l/CARD; ++j){
         if(k == 0 ){
-          init_step3(0);
-          init_step3(1);
-          init_step3(2);
-          init_step3(3);
-          init_step3(4);
+          st(SigmaDelta_step3[k][i+BORD/2][j+(BORD/(2*CARD))],_mm_set1_epi8(vmin+1));
         }
         else{
-          ld_st_step3(0);
-          ld_st_step3(1);
-          ld_st_step3(2);
-          ld_st_step3(3);
-          ld_st_step3(4);
 
-        }
-        switch(r){
-          case 4 :
-          if(k == 0 ){
-            init_step3_switch(0);
-            init_step3_switch(1);
-            init_step3_switch(2);
-            init_step3_switch(3);
-          }
-          else{
-            ld_st_step3_switch(0);
-            ld_st_step3_switch(1);
-            ld_st_step3_switch(2);
-            ld_st_step3_switch(3);
-          }
-          break;
+          //initialisation Vt-1(x) Ot(x)
+          d = ld(SigmaDelta_step3[k-1][i+BORD/2][j+(BORD/(2*CARD))]);
+          a = d;
+          b = ld(SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))]);
+          b = _mm_add_epi8(b,b); // N = 2
+          //b = _mm_add_epi8(b,b); // N = 4
 
-          case 3 :
-          if(k == 0 ){
-            init_step3_switch(0);
-            init_step3_switch(1);
-            init_step3_switch(2);
-          }
-          else{
-            ld_st_step3_switch(0);
-            ld_st_step3_switch(1);
-            ld_st_step3_switch(2);
+          // Permet de tester si on a des pixel négatif (>127)
+          n1 = _mm_cmplt_epi8 (b,k0);
+          n2 = _mm_cmplt_epi8 (a,k0);
 
-          }
-            break;
+          // Si a < b
+          c =  _mm_cmplt_epi8 (a,b);
+          c = _mm_xor_si128(c,n1);
+          c = _mm_xor_si128(c,n2);
+          kt = _mm_and_si128(c,k1);
+          d = _mm_add_epi8(d,kt);
 
-          case 2 :
-          if(k == 0 ){
-            init_step3_switch(0);
-            init_step3_switch(1);
-          }
-          else{
-            ld_st_step3_switch(0);
-            ld_st_step3_switch(1);
+          //Si a > b
+          c = _mm_cmpgt_epi8 (a,b);
+          c = _mm_xor_si128(c,n2);
+          c = _mm_xor_si128(c,n1);
+          kt = _mm_and_si128(c,k1);
+          d = _mm_sub_epi8(d,kt);
 
-          }
-          break;
+          //Si = 255 on fait -1
+          c = _mm_cmpeq_epi8 (d,_mm_set1_epi8(vmax));
+          n1= _mm_and_si128(c,k1);
+          d = _mm_sub_epi8(d,n1);
 
-          case 1 :
-          if(k == 0 ){
-            init_step3_switch(0);
-          }
-          else{
-            ld_st_step3_switch(0);
-          }
-            break;
+          //Si = 0 on fait +1
+          c = _mm_cmpeq_epi8 (d,_mm_set1_epi8(vmin));
+          n1= _mm_and_si128(c,k1);
+          d = _mm_add_epi8(d,n1);
 
-          default:
-            break;
+          st(SigmaDelta_step3[k][i+BORD/2][j+(BORD/(2*CARD))],d);
+
         }
       }
     }
   }
 }
 
-
-
-
 void SD_step_4_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, vuint8*** SigmaDelta_step4, int h, int l, int n){
-  int r = (l/CARD)%5;
   vuint8 k1 = _mm_set1_epi8 ((char)1);
   vuint8 k0 = _mm_set1_epi8 ((char)0);
   vuint8 k255 = _mm_set1_epi8 ((char)255);
@@ -458,38 +392,24 @@ void SD_step_4_SIMD(vuint8*** SigmaDelta_step2, vuint8*** SigmaDelta_step3, vuin
 
   for(int k = 0; k<n; ++k){
     for(int i = 0; i<h ; ++i){
-      for(int j = 0; j<l/CARD-r; j+=5){
-          ld_st_step4(0);
-          ld_st_step4(1);
-          ld_st_step4(2);
-          ld_st_step4(3);
-          ld_st_step4(4);
-        }
-        switch(r){
-          case 4 :
-                  ld_st_step4_switch(0);
-                  ld_st_step4_switch(1);
-                  ld_st_step4_switch(2);
-                  ld_st_step4_switch(3);
-          break;
+      for(int j = 0; j<l/CARD; ++j){
+          //SigmaDelta_step2[k][i][j] = abs(SigmaDelta_step1[k][i][j] - SigmaDelta_step0[k][i][j]);
+          a = ld(SigmaDelta_step2[k][i+BORD/2][j+(BORD/(2*CARD))]);
+          b = ld(SigmaDelta_step3[k][i+BORD/2][j+(BORD/(2*CARD))]);
 
-          case 3 :
-                  ld_st_step4_switch(0);
-                  ld_st_step4_switch(1);
-                  ld_st_step4_switch(2);
-          break;
+          //n1 à 1 si les valeurs de b > 127
+          //n2 à 1 si les valeurs de a > 127
+          n1 = _mm_cmplt_epi8 (b,k0);
+          n2 = _mm_cmplt_epi8 (a,k0);
 
-          case 2 :
-                  ld_st_step4_switch(0);
-                  ld_st_step4_switch(1);
-          break;
+          //c à 1 dans les cas ou b > a en signé donc cas problématique en unsigned
+          c = _mm_cmplt_epi8 (a,b);
+          c = _mm_xor_si128(c,n2);
+          c = _mm_xor_si128(c,n1);
+          d = _mm_and_si128(c,k255);
 
-          case 1 :
-                  ld_st_step4_switch(0);
-          break;
+          st(SigmaDelta_step4[k][i+BORD/2][j+(BORD/(2*CARD))],d);
 
-          default:
-          break;
         }
       }
     }
