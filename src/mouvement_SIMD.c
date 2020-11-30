@@ -245,6 +245,7 @@ void SD_step_1_SIMD(vuint8*** SigmaDelta_step0, vuint8*** SigmaDelta_step1, int 
     for(int i = 0; i<h ; ++i){
       for(int j = 0; j<l/CARD; ++j){
         if(k == 0 ){
+          //initialisation M0(x) I0(x)
           t = ld(SigmaDelta_step0[k][i+BORD/2][j+((BORD/2)/CARD)]);
           st(SigmaDelta_step1[k][i+BORD/2][j+(BORD/(2*CARD))],_mm_add_epi8(t,k0));
         }
