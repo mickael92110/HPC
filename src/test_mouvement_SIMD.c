@@ -160,8 +160,8 @@ void test_algo_SD_step_3_SIMD(){
 }
 
 void test_algo_SD_step_4_SIMD(){
-  vuint8 k0 = _mm_set1_epi8 (0);
-  vuint8 k255 = _mm_set1_epi8 (255);
+  vuint8 k0 = _mm_set1_epi8 ((char)0);
+  vuint8 k255 = _mm_set1_epi8 ((char)255);
   vuint8 a,b,c,n1,n2,d;
 
   puts("===================");
