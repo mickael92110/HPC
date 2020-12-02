@@ -38,7 +38,7 @@ void test_dilatation3_SIMD(){
   matrice_test[0][2][2] = init_vuint8_all(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
   display_vui8matrix (matrice_test[0],nrl, nrh, ncl, nch, "%d", "\nmatrice test\n");
   //TEST DILATATION 3 SIMD
-  matrice_test_dilatation3[0][1][1] = filtre_or_3(matrice_test, 0,1,1);
+  matrice_test_dilatation3[0][1][1] = or_3_SIMD(matrice_test, 0,1,1);
   display_vui8matrix (matrice_test_dilatation3[0],nrl, nrh, ncl, nch, "%d", "\nmatrice test dilatation\n");
 
 }
@@ -71,7 +71,7 @@ void test_erosion3_SIMD(){
 
   display_vui8matrix (matrice_test[0],nrl, nrh, ncl, nch, "%d", "\nmatrice test\n");
   //TEST EROSION 3 SIMD
-  matrice_test_erosion3[0][1][1] = filtre_and_3(matrice_test, 0,1,1);
+  matrice_test_erosion3[0][1][1] = and_3_SIMD(matrice_test, 0,1,1);
   display_vui8matrix (matrice_test_erosion3[0],nrl, nrh, ncl, nch, "%d", "\n matrice erosion\n");
 
 
@@ -93,7 +93,7 @@ void test_dilatation5_SIMD(){
   matrice_test[0][2][2] = init_vuint8_all(1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
   display_vui8matrix (matrice_test[0],nrl, nrh, ncl, nch, "%d", "\nmatrice test\n");
   //TEST EROSION 3 SIMD
-  matrice_test_dilatation5[0][2][1] = filtre_or_5(matrice_test, 0,2,1);
+  matrice_test_dilatation5[0][2][1] = or_5_SIMD(matrice_test, 0,2,1);
 
   display_vuint8 (matrice_test_dilatation5[0][2][1],"%d", "\nmatrice test dilatation\n");
 
@@ -124,7 +124,7 @@ void test_erosion5_SIMD(){
 
   display_vui8matrix (matrice_test[0],nrl, nrh, ncl, nch, "%d", "\nmatrice test\n");
   //TEST EROSION 3 SIMD
-  matrice_test_erosion5[0][2][1] = filtre_and_5(matrice_test, 0,2,1);
+  matrice_test_erosion5[0][2][1] = and_5_SIMD(matrice_test, 0,2,1);
   display_vuint8 (matrice_test_erosion5[0][2][1],"%d", "\nmatrice test erosion\n");
   printf("\n");
 }

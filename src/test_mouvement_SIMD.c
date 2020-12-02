@@ -29,28 +29,40 @@ void test_algo_SD_step_1_SIMD() {
 
 
   //initialisation Mt-1(x) It(x)
-  d = setr_epi8 (134,255,30,127,129,0  ,1,222,0  ,127,0,4,1,200,128,255);
+  d = setr_epi8 (134,255,30,127,129,0  ,1,222,0  ,17,16,4,1,200,128,255);
   a = d;
-  b = setr_epi8 (128,254,10,1  ,128,127,2,223,255,127,0,4,1,199,127,1  );
+  b = setr_epi8 (128,254,10,1  ,128,127,2,223,255,137,128,4,1,113,127,1  );
 
+  display_vuint8(a, "%4.1u", "a    ="); puts("");
+  display_vuint8(b, "%4.1u", "b    ="); puts("");
   // Permet de tester si on a des pixel négatif (>127)
   n1 = _mm_cmplt_epi8 (b,k0);
   n2 = _mm_cmplt_epi8 (a,k0);
-
-
+  display_vuint8(n1, "%4.1u", "n1   ="); puts("");
+  display_vuint8(n2, "%4.1u", "n2   ="); puts("");
   // Si a < b
-  c = _mm_cmplt_epi8(a,b);
+  c =  _mm_cmplt_epi8 (a,b);
+  display_vuint8(c, "%4.1u", "c    ="); puts("");
   c = _mm_xor_si128(c,n1);
+  display_vuint8(c, "%4.1u", "c    ="); puts("");
   c = _mm_xor_si128(c,n2);
-  kt= _mm_and_si128(c,k1);
+  display_vuint8(c, "%4.1u", "c    ="); puts("");
+  kt = _mm_and_si128(c,k1);
+  display_vuint8(kt, "%4.1u", "kt   ="); puts("");
   d = _mm_add_epi8(d,kt);
+  display_vuint8(d, "%4.1u", "d    ="); puts("");
 
   //Si a > b
-  c = _mm_cmpgt_epi8(a,b);
+  c = _mm_cmpgt_epi8 (a,b);
+  display_vuint8(c, "%4.1u", "c    ="); puts("");
   c = _mm_xor_si128(c,n2);
+  display_vuint8(c, "%4.1u", "c    ="); puts("");
   c = _mm_xor_si128(c,n1);
-  kt= _mm_and_si128(c,k1);
+  display_vuint8(c, "%4.1u", "c    ="); puts("");
+  kt = _mm_and_si128(c,k1);
+  display_vuint8(kt, "%4.1u", "kt   ="); puts("");
   d = _mm_sub_epi8(d,kt);
+  display_vuint8(d, "%4.1u", "d    ="); puts("");
 
 
   display_vuint8(a, "%4.1u", "a    ="); puts("");
@@ -72,31 +84,44 @@ void test_algo_SD_step_2_SIMD() {
 
 
   //SigmaDelta_step2[k][i][j] = abs(SigmaDelta_step1[k][i][j] - SigmaDelta_step0[k][i][j]);
-  a = setr_epi8 (15,235,130,255,200,10,230,125,1  ,0  ,4,1,200,128,255,0);
-  b = setr_epi8 (10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,0);
+  a = setr_epi8 (15,235,130,255,200,10,230,125,1  ,0  ,4,1,200,32,43,128);
+  b = setr_epi8 (10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,64,11,127);
 
+  display_vuint8(a, "%4.1u", "a    ="); puts("");
+  display_vuint8(b, "%4.1u", "b    ="); puts("");
   //n1 à 1 si les valeurs de b > 127
   //n2 à 1 si les valeurs de a > 127
   n1 = _mm_cmplt_epi8 (b,k0);
   n2 = _mm_cmplt_epi8 (a,k0);
+  display_vuint8(n1, "%4.1u", "n1   ="); puts("");
+  display_vuint8(n2, "%4.1u", "n2   ="); puts("");
 
   //c à 1 dans les cas ou b > a en signé donc cas problématique en unsigned
   c = _mm_cmplt_epi8 (a,b);
+  display_vuint8(c, "%4.1u", "c    ="); puts("");
   c = _mm_xor_si128(c,n2);
+  display_vuint8(c, "%4.1u", "c    ="); puts("");
   c = _mm_xor_si128(c,n1);
+  display_vuint8(c, "%4.1u", "c    ="); puts("");
 
   //Soustraction en signé
   d = _mm_sub_epi8(a,b);
+  display_vuint8(d, "%4.1u", "d    ="); puts("");
 
   //On met dans kn les cas sans problèmes en unsigned
   kn = _mm_andnot_si128(c,d);
+  display_vuint8(kn, "%4.1u", "kn   ="); puts("");
 
   //On met dans dn les cas avec problèmes en unsigned
   dn = _mm_and_si128(d,c);
+  display_vuint8(dn, "%4.1u", "dn   ="); puts("");
   //On fait 255-dn+1 pour résoudre le problème des unsigned
   dn = _mm_sub_epi8(c,dn);
+  display_vuint8(dn, "%4.1u", "dn   ="); puts("");
   n1 = _mm_and_si128(c,k1);
+  display_vuint8(n1, "%4.1u", "n1   ="); puts("");
   dn = _mm_add_epi8(dn,n1);
+  display_vuint8(dn, "%4.1u", "dn   ="); puts("");
 
   //Enfin on regroupe le tableau des sans problèmes et des problèmes résolu
   d = _mm_add_epi8(dn,kn);
@@ -107,12 +132,16 @@ void test_algo_SD_step_2_SIMD() {
 }
 
 void test_algo_SD_step_3_SIMD(){
-  uint8 vmin = 0;
-  uint8 vmax = 255;
-
-  vuint8 k1 = _mm_set1_epi8 (1);
-  vuint8 k0 = _mm_set1_epi8 (0);
+  uint8 vmin = 1;
+  uint8 vmax = 254;
+  vmin = vmin-1;
+  vmax = vmax+1;
+  vuint8 k1 = _mm_set1_epi8 ((char)1);
+  vuint8 k0 = _mm_set1_epi8 ((char)0);
+  vuint8 vmin_v = _mm_set1_epi8 ((char)(vmin));
+  vuint8 vmax_v = _mm_set1_epi8 ((char)(vmax));
   vuint8 a,b,c,n1,n2,d,kt;
+
 
   puts("===================");
   puts("=== test step 3 ===");
@@ -122,9 +151,10 @@ void test_algo_SD_step_3_SIMD(){
   d = setr_epi8 (1,235,130,255,200,10,230,125,1  ,0  ,4,1,200,128,255,0);
   a = d;
   b = setr_epi8 (10,230,125,1  ,0  ,15,235,130,255,200,4,1,200,128,255,0);
-
+  display_vuint8(a, "%4.1u", "a    ="); puts("");
   b = _mm_add_epi8(b,b); // N = 2
   b = _mm_add_epi8(b,b); // N = 4
+  display_vuint8(b, "%4.1u", "b    ="); puts("");
 
   // Permet de tester si on a des pixel négatif (>127)
   n1 = _mm_cmplt_epi8 (b,k0);
@@ -134,8 +164,11 @@ void test_algo_SD_step_3_SIMD(){
   c =  _mm_cmplt_epi8 (a,b);
   c = _mm_xor_si128(c,n1);
   c = _mm_xor_si128(c,n2);
+  display_vuint8(c, "%4.1u", "c    ="); puts("");
   kt = _mm_and_si128(c,k1);
+  display_vuint8(kt, "%4.1u", "kt   ="); puts("");
   d = _mm_add_epi8(d,kt);
+  display_vuint8(d, "%4.1u", "d    ="); puts("");
 
   //Si a > b
   c = _mm_cmpgt_epi8 (a,b);
