@@ -6,7 +6,6 @@
 #include "vnrutil.h"
 #include "mutil.h"
 #include "mymacro.h"
-#include "SD_macro.h"
 #include "simd_macro.h"
 #include <time.h>
 

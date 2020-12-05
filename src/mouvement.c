@@ -6,10 +6,9 @@
 
 #include "vdef.h"
 #include "vnrutil.h"
-#include "SD_macro.h"
+#include "simd_macro.h"
 
 #include "mutil.h"
-
 #include "mouvement.h"
 
 

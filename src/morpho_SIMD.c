@@ -1,19 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "def.h"
 #include "nrutil.h"
-
 #include "vdef.h"
 #include "vnrutil.h"
-#include "SD_macro.h"
-
+#include "simd_macro.h"
 #include "mutil.h"
-#include "morpho_SIMD_macro.h"
-
 #include "mouvement.h"
 #include "mouvement_SIMD.h"
-
 #include "morpho_SIMD.h"
 
 //###############################
@@ -311,6 +305,7 @@ void fermeture_3_SIMD_fusion(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_eros
 //   init_bord(Matrice_erosion,h,l,n,BORD);
 //   dilatation_3_SIMD(Matrice_erosion,Matrice_dilatation,h,l,n);
 // }
+
 void ouverture_fermeture_3_SIMD_fusion(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, vuint8 *** Matrice_dilatation,vuint8 *** Matrice_sortie, int h, int l, int n) {
   init_bord(SigmaDelta_step,h,l,n,BORD);
   erosion_3_SIMD_fusion(SigmaDelta_step,Matrice_erosion,Matrice_sortie,h,l,n);
@@ -476,7 +471,6 @@ void erosion_5_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, int 
     }
   }
 }
-
 
 void ouverture_5_SIMD(vuint8 *** SigmaDelta_step, vuint8 *** Matrice_erosion, vuint8 *** Matrice_dilatation, int h, int l, int n) {
   erosion_5_SIMD(SigmaDelta_step, Matrice_erosion,h,l,n);

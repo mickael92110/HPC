@@ -1,15 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "def.h"
 #include "nrutil.h"
-
 #include "vdef.h"
 #include "vnrutil.h"
-
 #include "mutil.h"
-#include "SD_macro.h"
-
+#include "simd_macro.h"
 #include "morpho.h"
 
 uint8 or_3(uint8 *** SigmaDelta_step, int i, int j, int n) {

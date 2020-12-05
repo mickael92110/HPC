@@ -16,7 +16,6 @@
 #include "mouvement.h"
 #include "mouvement_SIMD.h"
 #include "mouvement_SIMD_deroulage.h"
-#include "SD_macro.h"
 #include "simd_macro.h"
 #include "morpho.h"
 #include "morpho_SIMD.h"
@@ -46,55 +45,25 @@ void info(void)
 
 int main(int argc, char *argv[])
 {
-  // // chronometrie
-  int iter, niter = 4;
-  int run, nrun = 5;
-  double t0, t1, dt, tmin, t;
-  double cycles;
-  int vitesse_CPU = 2e9;
 
-  long h = 240;
-  long l = 320;
-  int n = 200;
-  int nrl=0;
-  int nrh=h;
-  int ncl=0;
-  int nch=l;
+  test_erosion5_SIMD_fusion();
 
-  vuint8*** SigmaDelta_step0_SIMD = init_tab_SIMD(h,l,n);
-  SD_step_0_SIMD(SigmaDelta_step0_SIMD, h,l, n);
-  CHRONO(SD_step_0_SIMD(SigmaDelta_step0_SIMD, h,l, n),cycles);
-  printf("cycles step 0 : %6.2f\n", cycles);
-  printf("temps step 0 en ms :%6.2f\n", cycles/(vitesse_CPU) * 1000);
-  save_all_image_SIMD(SigmaDelta_step0_SIMD,h,l,n, "./car3_out_step_0_SIMD/","car_3_out");
 
-  vuint8*** SigmaDelta_step1_SIMD = init_tab_SIMD(h,l,n);
-  SD_step_1_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD, h,l,n);
-  CHRONO(SD_step_1_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD, h,l,n),cycles);
-  printf("cycles step 1 : %6.2f\n", cycles);
-  printf("temps step 1 en ms :%6.2f\n", cycles/(vitesse_CPU) * 1000);
-  save_all_image_SIMD(SigmaDelta_step1_SIMD,h,l,n, "./car3_out_step_1_SIMD/","car_3_out");
-
-  vuint8*** SigmaDelta_step2_SIMD = init_tab_SIMD(h,l,n);
-  SD_step_2_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD,SigmaDelta_step2_SIMD, h,l,n);
-  CHRONO(SD_step_2_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD,SigmaDelta_step2_SIMD, h,l,n),cycles);
-  printf("cycles step 2 : %6.2f\n", cycles);
-  printf("temps step 2 en ms :%6.2f\n", cycles/(vitesse_CPU) * 1000);
-  save_all_image_SIMD(SigmaDelta_step2_SIMD,h,l,n, "./car3_out_step_2_SIMD/","car_3_out");
-
-  vuint8*** SigmaDelta_step3_SIMD = init_tab_SIMD(h,l,n);
-  SD_step_3_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,h,l,n,1,254);
-  CHRONO(SD_step_3_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,h,l,n,1,254),cycles);
-  printf("cycles step 3 : %6.2f\n", cycles);
-  printf("temps step 3 en ms :%6.2f\n", cycles/(vitesse_CPU) * 1000);
-  save_all_image_SIMD(SigmaDelta_step3_SIMD,h,l,n, "./car3_out_step_3_SIMD/","car_3_out");
-
-  vuint8*** SigmaDelta_step4_SIMD = init_tab_SIMD(h,l,n);
-  SD_step_4_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,SigmaDelta_step4_SIMD, h,l,n);
-  CHRONO(SD_step_4_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,SigmaDelta_step4_SIMD, h,l,n),cycles);
-  printf("cycles step 4 : %6.2f\n", cycles);
-  printf("temps step 4 en ms :%6.2f\n", cycles/(vitesse_CPU) * 1000);
-
+  // // // chronometrie
+  // int iter, niter = 4;
+  // int run, nrun = 5;
+  // double t0, t1, dt, tmin, t;
+  // double cycles;
+  // int vitesse_CPU = 2e9;
+  //
+  // long h = 240;
+  // long l = 320;
+  // int n = 200;
+  // int nrl=0;
+  // int nrh=h;
+  // int ncl=0;
+  // int nch=l;
+  //
   // vuint8*** SigmaDelta_step0_SIMD = init_tab_SIMD(h,l,n);
   // SD_step_0_SIMD(SigmaDelta_step0_SIMD, h,l, n);
   // CHRONO(SD_step_0_SIMD(SigmaDelta_step0_SIMD, h,l, n),cycles);
@@ -103,49 +72,75 @@ int main(int argc, char *argv[])
   // save_all_image_SIMD(SigmaDelta_step0_SIMD,h,l,n, "./car3_out_step_0_SIMD/","car_3_out");
   //
   // vuint8*** SigmaDelta_step1_SIMD = init_tab_SIMD(h,l,n);
-  // SD_step_1_SIMD_deroulage(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD, h,l,n);
-  // CHRONO(SD_step_1_SIMD_deroulage(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD, h,l,n),cycles);
+  // SD_step_1_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD, h,l,n);
+  // CHRONO(SD_step_1_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD, h,l,n),cycles);
   // printf("cycles step 1 : %6.2f\n", cycles);
   // printf("temps step 1 en ms :%6.2f\n", cycles/(vitesse_CPU) * 1000);
   // save_all_image_SIMD(SigmaDelta_step1_SIMD,h,l,n, "./car3_out_step_1_SIMD/","car_3_out");
   //
   // vuint8*** SigmaDelta_step2_SIMD = init_tab_SIMD(h,l,n);
-  // SD_step_2_SIMD_deroulage(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD,SigmaDelta_step2_SIMD, h,l,n);
-  // CHRONO(SD_step_2_SIMD_deroulage(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD,SigmaDelta_step2_SIMD, h,l,n),cycles);
+  // SD_step_2_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD,SigmaDelta_step2_SIMD, h,l,n);
+  // CHRONO(SD_step_2_SIMD(SigmaDelta_step0_SIMD,SigmaDelta_step1_SIMD,SigmaDelta_step2_SIMD, h,l,n),cycles);
   // printf("cycles step 2 : %6.2f\n", cycles);
   // printf("temps step 2 en ms :%6.2f\n", cycles/(vitesse_CPU) * 1000);
   // save_all_image_SIMD(SigmaDelta_step2_SIMD,h,l,n, "./car3_out_step_2_SIMD/","car_3_out");
   //
   // vuint8*** SigmaDelta_step3_SIMD = init_tab_SIMD(h,l,n);
-  // SD_step_3_SIMD_deroulage(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,h,l,n,1,254);
-  // CHRONO(SD_step_3_SIMD_deroulage(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,h,l,n,1,254),cycles);
+  // SD_step_3_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,h,l,n,1,254);
+  // CHRONO(SD_step_3_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,h,l,n,1,254),cycles);
   // printf("cycles step 3 : %6.2f\n", cycles);
   // printf("temps step 3 en ms :%6.2f\n", cycles/(vitesse_CPU) * 1000);
   // save_all_image_SIMD(SigmaDelta_step3_SIMD,h,l,n, "./car3_out_step_3_SIMD/","car_3_out");
   //
   // vuint8*** SigmaDelta_step4_SIMD = init_tab_SIMD(h,l,n);
-  // SD_step_4_SIMD_deroulage(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,SigmaDelta_step4_SIMD, h,l,n);
-  // CHRONO(SD_step_4_SIMD_deroulage(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,SigmaDelta_step4_SIMD, h,l,n),cycles);
+  // SD_step_4_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,SigmaDelta_step4_SIMD, h,l,n);
+  // CHRONO(SD_step_4_SIMD(SigmaDelta_step2_SIMD,SigmaDelta_step3_SIMD,SigmaDelta_step4_SIMD, h,l,n),cycles);
   // printf("cycles step 4 : %6.2f\n", cycles);
   // printf("temps step 4 en ms :%6.2f\n", cycles/(vitesse_CPU) * 1000);
 
-
-
-  // vuint8*** Matrice_dilatation = init_tab_SIMD(h,l,n);
-  // dilatation_5_SIMD(SigmaDelta_step0_SIMD,Matrice_dilatation, h,l,n);
-  // //save_all_image_SIMD(Matrice_dilatation,h,l,n, "./car3_out_dilatation_SIMD/","car_3_out");
+  // //############################################################
+  // //###################TEST EROSION 3*3 FUSION##################
+  // //############################################################
   //
   // vuint8*** Matrice_erosion = init_tab_SIMD(h,l,n);
-  // erosion_5_SIMD(SigmaDelta_step0_SIMD,Matrice_erosion, h,l,n);
-  // //save_all_image_SIMD(Matrice_erosion,h,l,n, "./car3_out_erosion_SIMD/","car_3_out");
-
-  free_SD_SIMD(SigmaDelta_step0_SIMD,h,l,n);
-  free_SD_SIMD(SigmaDelta_step1_SIMD,h,l,n);
-  free_SD_SIMD(SigmaDelta_step2_SIMD,h,l,n);
-  free_SD_SIMD(SigmaDelta_step3_SIMD,h,l,n);
-  free_SD_SIMD(SigmaDelta_step4_SIMD,h,l,n);
-  // // free_SD_SIMD(Matrice_dilatation,h,l,n);
-  // // free_SD_SIMD(Matrice_erosion,h,l,n);
+  // erosion_3_SIMD(SigmaDelta_step4_SIMD,Matrice_erosion, h, l, n);
+  // CHRONO(erosion_3_SIMD(SigmaDelta_step4_SIMD,Matrice_erosion, h, l, n),cycles);
+  // printf("cycles erosion SIMD  en ms : %6.6f\n", cycles);
+  // printf("temps erosion SIMD   en ms :%6.5f\n", cycles/(vitesse_CPU) * 1000);
+  // save_all_image_SIMD(Matrice_erosion,h,l,n, "./car3_out_erosion_3_SIMD/","car_3_out");
+  //
+  // vuint8*** Matrice_erosion_fusion = init_tab_SIMD(h,l,n);
+  // vuint8*** Matrice_sortie = init_tab_SIMD(h,l,n);
+  // erosion_3_SIMD_fusion(SigmaDelta_step4_SIMD,Matrice_erosion_fusion,Matrice_sortie, h, l, n);
+  // CHRONO(erosion_3_SIMD_fusion(SigmaDelta_step4_SIMD,Matrice_erosion_fusion,Matrice_sortie, h, l, n),cycles);
+  // printf("cycles erosion SIMD FUSION en ms : %6.2f\n", cycles);
+  // printf("temps erosion SIMD FUSION  en ms :%6.5f\n", cycles/(vitesse_CPU) * 1000);
+  // save_all_image_SIMD(Matrice_sortie,h,l,n, "./car3_out_erosion_3_SIMD_fusion/","car_3_out");
+  // //display_vui8matrix (Matrice_sortie[27],nrl, nrh, ncl, nch, "%d", "\nmatrice test\n");
+  //
+  //
+  //
+  //
+  // free_SD_SIMD(Matrice_erosion,h,l,n);
+  // free_SD_SIMD(Matrice_erosion_fusion,h,l,n);
+  // free_SD_SIMD(Matrice_sortie,h,l,n);
+  //
+  //
+  // // vuint8*** Matrice_dilatation = init_tab_SIMD(h,l,n);
+  // // dilatation_5_SIMD(SigmaDelta_step0_SIMD,Matrice_dilatation, h,l,n);
+  // // //save_all_image_SIMD(Matrice_dilatation,h,l,n, "./car3_out_dilatation_SIMD/","car_3_out");
+  // //
+  // // vuint8*** Matrice_erosion = init_tab_SIMD(h,l,n);
+  // // erosion_5_SIMD(SigmaDelta_step0_SIMD,Matrice_erosion, h,l,n);
+  // // //save_all_image_SIMD(Matrice_erosion,h,l,n, "./car3_out_erosion_SIMD/","car_3_out");
+  //
+  // free_SD_SIMD(SigmaDelta_step0_SIMD,h,l,n);
+  // free_SD_SIMD(SigmaDelta_step1_SIMD,h,l,n);
+  // free_SD_SIMD(SigmaDelta_step2_SIMD,h,l,n);
+  // free_SD_SIMD(SigmaDelta_step3_SIMD,h,l,n);
+  // free_SD_SIMD(SigmaDelta_step4_SIMD,h,l,n);
+  // // // free_SD_SIMD(Matrice_dilatation,h,l,n);
+  // // // free_SD_SIMD(Matrice_erosion,h,l,n);
   return 0;
 }
 
