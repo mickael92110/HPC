@@ -8,7 +8,7 @@
 #include "vnrutil.h"
 
 #include "mutil.h"
-#include "SD_macro.h"
+#include "simd_macro.h"
 
 #include "morpho.h"
 
