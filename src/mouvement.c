@@ -34,6 +34,64 @@ uint8*** init_tab(int h, int l, int n){
   return m;
 }
 
+void init_bord_scalaire(uint8*** SigmaDelta_step4_SIMD, int h,int l, int n){
+  for(int k = 0; k<n; ++k){
+    for(int i = BORD/2; i<h+BORD/2 ; ++i){
+      for(int j = BORD/2; j<l+BORD/2 ; ++j){
+        if(i == BORD/2){
+            SigmaDelta_step4_SIMD[k][i-1][j] = SigmaDelta_step4_SIMD[k][i][j];
+            SigmaDelta_step4_SIMD[k][i-2][j] = SigmaDelta_step4_SIMD[k][i][j];
+
+            if(j == BORD/2){
+              SigmaDelta_step4_SIMD[k][i-1][j-1] = SigmaDelta_step4_SIMD[k][i][j];
+              SigmaDelta_step4_SIMD[k][i-1][j-2] = SigmaDelta_step4_SIMD[k][i][j];
+              SigmaDelta_step4_SIMD[k][i-2][j-1] = SigmaDelta_step4_SIMD[k][i][j];
+              SigmaDelta_step4_SIMD[k][i-2][j-2] = SigmaDelta_step4_SIMD[k][i][j];
+            }
+
+            if(j == l+BORD/2-1){
+              SigmaDelta_step4_SIMD[k][i-1][j+1] = SigmaDelta_step4_SIMD[k][i][j];
+              SigmaDelta_step4_SIMD[k][i-1][j+2] = SigmaDelta_step4_SIMD[k][i][j];
+              SigmaDelta_step4_SIMD[k][i-2][j+1] = SigmaDelta_step4_SIMD[k][i][j];
+              SigmaDelta_step4_SIMD[k][i-2][j+2] = SigmaDelta_step4_SIMD[k][i][j];
+            }
+
+        }
+        if(i == h+BORD/2-1){
+            SigmaDelta_step4_SIMD[k][i+1][j] = SigmaDelta_step4_SIMD[k][i][j];
+            SigmaDelta_step4_SIMD[k][i+2][j] = SigmaDelta_step4_SIMD[k][i][j];
+
+            if(j == BORD/2){
+              SigmaDelta_step4_SIMD[k][i+1][j-1] = SigmaDelta_step4_SIMD[k][i][j];
+              SigmaDelta_step4_SIMD[k][i+1][j-2] = SigmaDelta_step4_SIMD[k][i][j];
+              SigmaDelta_step4_SIMD[k][i+2][j-1] = SigmaDelta_step4_SIMD[k][i][j];
+              SigmaDelta_step4_SIMD[k][i+2][j-2] = SigmaDelta_step4_SIMD[k][i][j];
+            }
+
+            if(j == l+BORD/2-1){
+              SigmaDelta_step4_SIMD[k][i+1][j+1] = SigmaDelta_step4_SIMD[k][i][j];
+              SigmaDelta_step4_SIMD[k][i+1][j+2] = SigmaDelta_step4_SIMD[k][i][j];
+              SigmaDelta_step4_SIMD[k][i+2][j+1] = SigmaDelta_step4_SIMD[k][i][j];
+              SigmaDelta_step4_SIMD[k][i+2][j+2] = SigmaDelta_step4_SIMD[k][i][j];
+            }
+        }
+
+        if(j == BORD/2){
+          SigmaDelta_step4_SIMD[k][i][j-1] = SigmaDelta_step4_SIMD[k][i][j];
+          SigmaDelta_step4_SIMD[k][i][j-2] = SigmaDelta_step4_SIMD[k][i][j];
+        }
+
+        if(j == l+BORD/2-1){
+          SigmaDelta_step4_SIMD[k][i][j+1] = SigmaDelta_step4_SIMD[k][i][j];
+          SigmaDelta_step4_SIMD[k][i][j+2] = SigmaDelta_step4_SIMD[k][i][j];
+        }
+      }
+    }
+  }
+}
+
+
+
 //Cette fonction va remplir le tableau d'images
 // h : hauteur de l'image
 // l : largeur de l'image
